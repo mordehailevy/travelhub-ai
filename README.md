@@ -6,7 +6,7 @@ Registered users browse vacations and like/unlike them; admins manage the catalo
 and export it as CSV. Two AI features are included: a per-destination trip recommendation, and a natural-language
 "ask the data" assistant backed by an in-process MCP server.
 
-GitHub repository: `<add your repo URL here>`
+GitHub repository: https://github.com/mordehailevy/travelhub-ai
 
 ## Project structure
 
