@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"startDate":{"$numberInt":"1"}},"name":"startDate_1","background":true}],"uuid":"89e0f421b89e4ae68bf814f9c24c397a","collectionName":"vacations","type":"collection"}
