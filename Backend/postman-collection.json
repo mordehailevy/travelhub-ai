@@ -1,0 +1,190 @@
+{
+  "info": {
+    "name": "TravelHub AI API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "token", "value": "" },
+    { "key": "vacationId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Sam\",\n  \"lastName\": \"Traveler\",\n  \"email\": \"sam@example.com\",\n  \"password\": \"pass1234\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@travelhub.ai\",\n  \"password\": \"user1234\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vacations (user)",
+      "item": [
+        {
+          "name": "List (paginated + filter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations?page=1&filter=all"
+          }
+        },
+        {
+          "name": "Like",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/{{vacationId}}/like"
+          }
+        },
+        {
+          "name": "Unlike",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/{{vacationId}}/like"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vacations (admin)",
+      "item": [
+        {
+          "name": "List all (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/admin/all"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/{{vacationId}}"
+          }
+        },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "destination", "value": "Santorini, Greece", "type": "text" },
+                { "key": "description", "value": "Cliffside sunsets and whitewashed villages.", "type": "text" },
+                { "key": "startDate", "value": "2027-05-01", "type": "text" },
+                { "key": "endDate", "value": "2027-05-10", "type": "text" },
+                { "key": "price", "value": "1500", "type": "text" },
+                { "key": "image", "type": "file", "src": [] }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/{{vacationId}}",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "destination", "value": "Santorini, Greece", "type": "text" },
+                { "key": "description", "value": "Updated description.", "type": "text" },
+                { "key": "startDate", "value": "2027-05-01", "type": "text" },
+                { "key": "endDate", "value": "2027-05-12", "type": "text" },
+                { "key": "price", "value": "1600", "type": "text" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/vacations/{{vacationId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports (admin)",
+      "item": [
+        {
+          "name": "Likes per destination (JSON)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/reports/likes"
+          }
+        },
+        {
+          "name": "Likes per destination (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/api/reports/likes/csv"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Recommendation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/ai/recommend",
+            "body": { "mode": "raw", "raw": "{\n  \"destination\": \"Rhodes, Greece\"\n}" }
+          }
+        },
+        {
+          "name": "Ask (MCP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/mcp/ask",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"What is the average price of the vacations?\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

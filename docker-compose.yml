@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./Backend
+    restart: unless-stopped
+    env_file:
+      - ./Backend/.env
+    environment:
+      MONGO_URI: mongodb://db:27017/travelhub
+      CLIENT_ORIGIN: http://localhost:5173
+    volumes:
+      - backend-uploads:/app/uploads
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: http://localhost:4000
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
+  backend-uploads:
