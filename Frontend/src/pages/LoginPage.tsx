@@ -3,6 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { login as loginRequest } from "../api/auth";
 import { ApiClientError } from "../api/client";
 import { useAuth } from "../context/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,32 +34,38 @@ export function LoginPage() {
   };
 
   return (
-    <div className="form-card">
-      <h1 className="form-title">Login</h1>
-      {error && <div className="form-error">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-field">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div className="form-field">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            required
-            minLength={4}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button className="btn btn-primary btn-block" type="submit" disabled={submitting}>
-          {submitting ? "Signing in…" : "Login"}
-        </button>
-      </form>
-      <p className="form-footnote">
-        Don't have an account? <Link to="/register">Register now</Link>
-      </p>
-    </div>
+    <Card className="mx-auto max-w-[440px] p-9">
+      <CardContent className="px-0">
+        <h1 className="mb-6 text-center font-heading text-[1.6rem] font-extrabold text-foreground">Login</h1>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={4}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <Button className="w-full" type="submit" disabled={submitting}>
+            {submitting ? "Signing in…" : "Login"}
+          </Button>
+        </form>
+        <p className="mt-4.5 text-center text-sm text-muted-foreground">
+          Don't have an account? <Link to="/register">Register now</Link>
+        </p>
+      </CardContent>
+    </Card>
   );
 }

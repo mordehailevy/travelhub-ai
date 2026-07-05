@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from "react";
 import type { Vacation } from "../types";
 import { imageUrl } from "../api/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export interface VacationFormValues {
   destination: string;
@@ -63,67 +69,84 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
   const error = clientError ?? serverError;
 
   return (
-    <div className="form-card wide-form-card">
-      <h1 className="form-title">{mode === "add" ? "Add Vacation" : "Edit Vacation"}</h1>
-      {error && <div className="form-error">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-field">
-          <label htmlFor="destination">Destination</label>
-          <input id="destination" required value={destination} onChange={(e) => setDestination(e.target.value)} />
-        </div>
-        <div className="form-field">
-          <label htmlFor="description">Description</label>
-          <textarea id="description" required value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
-        <div className="form-field">
-          <label htmlFor="startDate">Start on</label>
-          <input
-            id="startDate"
-            type="date"
-            required
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="endDate">End on</label>
-          <input id="endDate" type="date" required value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-        </div>
-        <div className="form-field">
-          <label htmlFor="price">Price ($)</label>
-          <input
-            id="price"
-            type="number"
-            min={1}
-            max={10000}
-            step="1"
-            required
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="image">Cover image{mode === "edit" ? " (leave empty to keep current)" : ""}</label>
-          {mode === "edit" && initial && (
-            <img className="current-image-preview" src={imageUrl(initial.imageFileName)} alt={initial.destination} />
-          )}
-          <input
-            id="image"
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-          />
-        </div>
+    <Card className="mx-auto max-w-[560px] p-9">
+      <CardContent className="px-0">
+        <h1 className="mb-6 text-center font-heading text-[1.6rem] font-extrabold text-foreground">
+          {mode === "add" ? "Add Vacation" : "Edit Vacation"}
+        </h1>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="destination">Destination</Label>
+            <Input id="destination" required value={destination} onChange={(e) => setDestination(e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              required
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="startDate">Start on</Label>
+            <Input
+              id="startDate"
+              type="date"
+              required
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="endDate">End on</Label>
+            <Input id="endDate" type="date" required value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="price">Price ($)</Label>
+            <Input
+              id="price"
+              type="number"
+              min={1}
+              max={10000}
+              step="1"
+              required
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="image">Cover image{mode === "edit" ? " (leave empty to keep current)" : ""}</Label>
+            {mode === "edit" && initial && (
+              <img
+                className="mb-2 max-h-40 w-full rounded-xl border border-border object-cover"
+                src={imageUrl(initial.imageFileName)}
+                alt={initial.destination}
+              />
+            )}
+            <Input
+              id="image"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+            />
+          </div>
 
-        <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
-          <button className="btn btn-primary btn-block" type="submit" disabled={submitting}>
-            {submitting ? "Saving…" : mode === "add" ? "Add Vacation" : "Update"}
-          </button>
-          <button className="btn btn-secondary btn-block" type="button" onClick={onCancel} disabled={submitting}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="mt-1 flex gap-2.5">
+            <Button className="flex-1" type="submit" disabled={submitting}>
+              {submitting ? "Saving…" : mode === "add" ? "Add Vacation" : "Update"}
+            </Button>
+            <Button className="flex-1" variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

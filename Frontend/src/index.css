@@ -1,19 +1,86 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Design tokens sourced from nextlevelbuilder/ui-ux-pro-max-skill:
+  - Palette: data/colors.csv row 37 "Travel/Tourism Agency" (Sky Blue + Adventure Orange, WCAG-checked)
+  - Style: data/styles.csv "Aurora UI" (row 10) + "Hero-Centric" (row 20)
+  - Reasoning: data/ui-reasoning.csv row 37 -> Storytelling-Driven + Hero, Aurora UI + Motion-Driven
+  - Typography: data/typography.csv "E-commerce Clean" pairing (Rubik + Nunito Sans)
+*/
+
 :root {
-  --paper: #f4f5f2;
-  --ink: #1c2521;
-  --ink-soft: #4b564f;
-  --ink-faint: #7c877f;
-  --accent: #2f6f62;
-  --accent-deep: #1f4f45;
-  --accent-warm: #b8863b;
-  --line: #dbe1dc;
-  --card: #ffffff;
-  --danger: #9a4a3c;
-  --danger-bg: #f4e7e3;
-  --display: "Palatino Linotype", Palatino, "URW Palladio L", Georgia, serif;
-  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --color-primary: #0ea5e9;
+  --color-on-primary: #0f172a;
+  --color-secondary: #38bdf8;
+  --color-on-secondary: #0f172a;
+  --color-accent: #ea580c;
+  --color-on-accent: #ffffff;
+  --color-bg: #f0f9ff;
+  --color-fg: #0c4a6e;
+  --color-card: #ffffff;
+  --color-card-fg: #0c4a6e;
+  --color-muted: #e8f2f8;
+  --color-muted-fg: #64748b;
+  --color-border: #bae6fd;
+  --color-destructive: #dc2626;
+  --color-on-destructive: #ffffff;
+  --color-ring: #0ea5e9;
+
+  --aurora-gradient: linear-gradient(120deg, #0ea5e9, #38bdf8, #ea580c, #0ea5e9);
+
+  --shadow-sm: 0 1px 2px rgba(12, 74, 110, 0.07), 0 1px 3px rgba(12, 74, 110, 0.05);
+  --shadow-md: 0 8px 24px rgba(12, 74, 110, 0.1);
+  --shadow-lg: 0 16px 40px rgba(12, 74, 110, 0.16);
+  --shadow-glow: 0 8px 20px rgba(234, 88, 12, 0.3);
+
+  --display: "Rubik", "Nunito Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
   color-scheme: light;
+
+  /* shadcn/ui semantic tokens — aliased to the Sky Blue + Adventure Orange
+     palette above, not the library's default grayscale preset. */
+  --background: var(--color-bg);
+  --foreground: var(--color-fg);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-fg);
+  --popover: var(--color-card);
+  --popover-foreground: var(--color-card-fg);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-on-primary);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-on-secondary);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-fg);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-on-accent);
+  --destructive: var(--color-destructive);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-ring);
+
+  --chart-1: var(--color-primary);
+  --chart-2: var(--color-accent);
+  --chart-3: var(--color-secondary);
+  --chart-4: var(--color-muted-fg);
+  --chart-5: var(--color-fg);
+
+  --radius: 0.75rem;
+
+  --sidebar: var(--color-card);
+  --sidebar-foreground: var(--color-fg);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-on-primary);
+  --sidebar-accent: var(--color-muted);
+  --sidebar-accent-foreground: var(--color-fg);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-ring);
 }
 
 * {
@@ -28,98 +95,27 @@ body,
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--body);
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: var(--accent-deep);
 }
 
 button {
   font-family: inherit;
 }
 
-.app-shell {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
 }
 
-/* Navbar */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 16px 32px;
-  background: var(--card);
-  border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.navbar-brand {
-  font-family: var(--display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--ink);
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.navbar-links {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.navbar-link {
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-  text-decoration: none;
-  padding: 7px 12px;
-  border-radius: 5px;
-  transition: background 0.15s, color 0.15s;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.navbar-link:hover {
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.navbar-link.active {
-  color: var(--accent-deep);
-  background: #eaf1ef;
-  font-weight: 600;
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.navbar-user {
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  font-family: var(--mono);
-}
-
-.main-content {
-  flex: 1;
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 32px 24px 64px;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 .page-header {
@@ -128,373 +124,199 @@ button {
 
 .page-title {
   font-family: var(--display);
-  font-size: 2rem;
+  font-weight: 800;
+  font-size: 2.1rem;
+  letter-spacing: -0.02em;
   margin: 0 0 6px;
-  color: var(--ink);
+  color: var(--color-fg);
 }
 
 .page-subtitle {
-  color: var(--ink-soft);
+  color: var(--color-muted-fg);
   margin: 0;
   max-width: 62ch;
 }
 
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 10px 18px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: filter 0.15s, background 0.15s;
-}
-
-.btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: var(--accent);
+/* Hero — Aurora UI + Hero-Centric (styles.csv rows 10 & 20) */
+.hero {
+  position: relative;
+  border-radius: 24px;
+  padding: 44px 40px;
+  margin-bottom: 32px;
+  background: var(--aurora-gradient);
+  background-size: 300% 300%;
+  animation: aurora-shift 12s ease infinite;
   color: #fff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--accent-deep);
-}
-
-.btn-secondary {
-  background: var(--card);
-  color: var(--ink);
-  border-color: var(--line);
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: var(--paper);
-}
-
-.btn-danger {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.btn-danger:hover:not(:disabled) {
-  filter: brightness(0.95);
-}
-
-.btn-block {
-  width: 100%;
-}
-
-.btn-sm {
-  padding: 6px 12px;
-  font-size: 0.8rem;
-}
-
-/* Forms */
-.form-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 32px;
-  max-width: 440px;
-  margin: 0 auto;
-}
-
-.form-title {
-  font-family: var(--display);
-  font-size: 1.6rem;
-  text-align: center;
-  color: var(--accent-deep);
-  margin: 0 0 24px;
-}
-
-.form-field {
-  margin-bottom: 16px;
-}
-
-.form-field label {
-  display: block;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ink-soft);
-  margin-bottom: 6px;
-}
-
-.form-field input,
-.form-field textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  background: var(--paper);
-  color: var(--ink);
-}
-
-.form-field input:focus,
-.form-field textarea:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-  background: #fff;
-}
-
-.form-field textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-.form-error {
-  background: var(--danger-bg);
-  color: var(--danger);
-  border-radius: 5px;
-  padding: 10px 14px;
-  font-size: 0.86rem;
-  margin-bottom: 16px;
-}
-
-.form-footnote {
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  margin-top: 18px;
-}
-
-.wide-form-card {
-  max-width: 560px;
-}
-
-.current-image-preview {
-  width: 100%;
-  max-height: 160px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-bottom: 8px;
-  border: 1px solid var(--line);
-}
-
-/* Filter bar */
-.filter-bar {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-
-.filter-chip {
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--ink-soft);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.filter-chip.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-/* Vacation grid */
-.vacation-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.vacation-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  box-shadow: var(--shadow-lg);
 }
 
-.vacation-card-image {
-  height: 170px;
-  width: 100%;
-  object-fit: cover;
-  background: var(--line);
-  display: block;
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(15, 23, 42, 0.15), rgba(15, 23, 42, 0.3));
 }
 
-.vacation-card-body {
-  padding: 16px 18px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+@keyframes aurora-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.vacation-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.vacation-destination {
+.hero-title {
+  position: relative;
   font-family: var(--display);
-  font-size: 1.2rem;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  text-shadow: 0 2px 4px rgba(15, 23, 42, 0.35);
+}
+
+.hero-subtitle {
+  position: relative;
   margin: 0;
-  color: var(--ink);
+  max-width: 56ch;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
 }
 
-.vacation-dates {
-  font-family: var(--mono);
-  font-size: 0.76rem;
-  color: var(--ink-faint);
-  white-space: nowrap;
+/*
+  ---break---
+*/
+
+@theme inline {
+  --font-sans: var(--body);
+  --font-heading: var(--display);
+  --font-mono: var(--mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+  --animate-aurora: aurora 8s ease-in-out infinite alternate;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+    }
+  }
+  @keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+    }
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);
+    }
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);
+    }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+    }
+  }
+  @keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+    transform: rotate(-5deg) scale(0.9);
+    }
+  25% {
+    background-position: 50% 100%;
+    transform: rotate(5deg) scale(1.1);
+    }
+  50% {
+    background-position: 100% 50%;
+    transform: rotate(-3deg) scale(0.95);
+    }
+  75% {
+    background-position: 50% 0%;
+    transform: rotate(3deg) scale(1.05);
+    }
+  100% {
+    background-position: 0% 50%;
+    transform: rotate(-5deg) scale(0.9);
+    }
+  }
 }
 
-.vacation-description {
-  font-size: 0.87rem;
-  color: var(--ink-soft);
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+/*
+  ---break---
+  No .dark variant: TravelHub AI is light-only by design (color-scheme is
+  pinned to "light" in :root), so shadcn's default dark palette is dropped
+  rather than left as dead, misleading CSS.
+*/
 
-.vacation-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 4px;
-}
-
-.vacation-price {
-  background: var(--accent);
-  color: #fff;
-  padding: 7px 14px;
-  border-radius: 5px;
-  font-weight: 700;
-  font-size: 0.92rem;
-}
-
-.like-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 7px 13px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--ink-soft);
-  cursor: pointer;
-}
-
-.like-btn.liked {
-  color: var(--danger);
-  border-color: #eed3cc;
-  background: var(--danger-bg);
-}
-
-.admin-actions {
-  display: flex;
-  gap: 8px;
-  padding: 12px 18px 0;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  margin-top: 32px;
-}
-
-.pagination button {
-  min-width: 34px;
-  height: 34px;
-  border-radius: 5px;
-  border: 1px solid var(--line);
-  background: var(--card);
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-}
-
-.pagination button.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.pagination button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* Chat / AI pages */
-.ai-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 28px;
-  max-width: 640px;
-}
-
-.ai-result {
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-  font-size: 0.94rem;
-  white-space: pre-wrap;
-  line-height: 1.65;
-}
-
-.empty-state {
-  color: var(--ink-faint);
-  font-style: italic;
-  padding: 40px 0;
-  text-align: center;
-}
-
-/* Report */
-.report-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 24px;
-}
-
-.report-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
-/* About */
-.about-card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 32px;
-  max-width: 640px;
-}
-
-.about-card h2 {
-  font-family: var(--display);
-  color: var(--accent-deep);
-}
-
-.spinner-text {
-  color: var(--ink-faint);
-  font-size: 0.9rem;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  a {
+    color: var(--color-primary);
+  }
 }

@@ -1,13 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
 import { deleteVacation, fetchAllVacationsAdmin } from "../api/vacations";
 import type { Vacation } from "../types";
 import { VacationCard } from "../components/VacationCard";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function AdminVacationsPage() {
   const [vacations, setVacations] = useState<Vacation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Vacation | null>(null);
   const navigate = useNavigate();
 
   const load = () => {
@@ -20,48 +35,83 @@ export function AdminVacationsPage() {
 
   useEffect(load, []);
 
-  const handleDelete = async (vacation: Vacation) => {
-    const confirmed = window.confirm(`Delete "${vacation.destination}"? This cannot be undone.`);
-    if (!confirmed) return;
-
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
     try {
-      await deleteVacation(vacation._id);
-      setVacations((prev) => prev.filter((v) => v._id !== vacation._id));
+      await deleteVacation(pendingDelete._id);
+      setVacations((prev) => prev.filter((v) => v._id !== pendingDelete._id));
     } catch {
       setError("Could not delete this vacation. Please try again.");
+    } finally {
+      setPendingDelete(null);
     }
   };
 
   return (
     <div>
-      <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <div className="mb-7 flex items-end justify-between gap-4">
         <div>
           <h1 className="page-title">Manage Vacations</h1>
           <p className="page-subtitle">Add, edit or remove vacations shown to travelers.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => navigate("/admin/vacations/new")}>
-          + Add Vacation
-        </button>
+        <Button onClick={() => navigate("/admin/vacations/new")}>
+          <Plus /> Add Vacation
+        </Button>
       </div>
 
-      {error && <div className="form-error">{error}</div>}
-      {loading && <p className="spinner-text">Loading vacations…</p>}
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-      {!loading && vacations.length === 0 && <p className="empty-state">No vacations yet.</p>}
+      {loading && (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
+          {Array.from({ length: 6 }, (_, i) => (
+            <div key={i} className="flex flex-col gap-3 overflow-hidden rounded-xl ring-1 ring-foreground/10">
+              <Skeleton className="h-[190px] w-full rounded-none" />
+              <div className="flex flex-col gap-2 px-4 pb-5">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-3 w-1/3" />
+                <Skeleton className="h-3 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!loading && vacations.length === 0 && (
+        <p className="py-10 text-center italic text-muted-foreground">No vacations yet.</p>
+      )}
 
       {!loading && vacations.length > 0 && (
-        <div className="vacation-grid">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
           {vacations.map((vacation) => (
             <VacationCard
               key={vacation._id}
               vacation={vacation}
               mode="admin"
               onEdit={(v) => navigate(`/admin/vacations/${v._id}/edit`)}
-              onDelete={handleDelete}
+              onDelete={setPendingDelete}
             />
           ))}
         </div>
       )}
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete "{pendingDelete?.destination}"?</AlertDialogTitle>
+            <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={confirmDelete}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

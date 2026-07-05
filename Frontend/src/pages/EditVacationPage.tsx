@@ -4,6 +4,8 @@ import { VacationForm, type VacationFormValues } from "../components/VacationFor
 import { fetchVacationById, updateVacation } from "../api/vacations";
 import { ApiClientError } from "../api/client";
 import type { Vacation } from "../types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function EditVacationPage() {
   const { id } = useParams<{ id: string }>();
@@ -45,8 +47,13 @@ export function EditVacationPage() {
     }
   };
 
-  if (loading) return <p className="spinner-text">Loading vacation…</p>;
-  if (!vacation) return <div className="form-error">{error ?? "Vacation not found."}</div>;
+  if (loading) return <Skeleton className="mx-auto h-96 max-w-[560px] rounded-xl" />;
+  if (!vacation)
+    return (
+      <Alert variant="destructive" className="mx-auto max-w-[560px]">
+        <AlertDescription>{error ?? "Vacation not found."}</AlertDescription>
+      </Alert>
+    );
 
   return (
     <VacationForm

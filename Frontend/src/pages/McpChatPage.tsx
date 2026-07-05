@@ -1,6 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { askMcp } from "../api/ai";
 import { ApiClientError } from "../api/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const EXAMPLES = [
   "How many vacations are currently active?",
@@ -44,42 +49,54 @@ export function McpChatPage() {
         </p>
       </div>
 
-      <div className="ai-card">
-        <form onSubmit={handleSubmit}>
-          <div className="form-field">
-            <label htmlFor="question">Question</label>
-            <textarea
-              id="question"
-              required
-              placeholder="e.g. What is the average price of the vacations?"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
+      <Card className="max-w-[640px] p-7">
+        <CardContent className="px-0">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="question">Question</Label>
+              <Textarea
+                id="question"
+                required
+                placeholder="e.g. What is the average price of the vacations?"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+              />
+            </div>
+            <Button type="submit" disabled={loading} className="w-fit">
+              {loading ? "Asking…" : "Ask"}
+            </Button>
+          </form>
+
+          <div className="mt-3.5 flex flex-wrap gap-2">
+            {EXAMPLES.map((example) => (
+              <Button
+                key={example}
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                onClick={() => {
+                  setQuestion(example);
+                  ask(example);
+                }}
+              >
+                {example}
+              </Button>
+            ))}
           </div>
-          <button className="btn btn-primary" type="submit" disabled={loading}>
-            {loading ? "Asking…" : "Ask"}
-          </button>
-        </form>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
-          {EXAMPLES.map((example) => (
-            <button
-              key={example}
-              type="button"
-              className="filter-chip"
-              onClick={() => {
-                setQuestion(example);
-                ask(example);
-              }}
-            >
-              {example}
-            </button>
-          ))}
-        </div>
-
-        {error && <div className="form-error" style={{ marginTop: 16 }}>{error}</div>}
-        {answer && <div className="ai-result">{answer}</div>}
-      </div>
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {answer && (
+            <div className="mt-5 whitespace-pre-wrap border-t border-border pt-5 text-[0.94rem] leading-relaxed">
+              {answer}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

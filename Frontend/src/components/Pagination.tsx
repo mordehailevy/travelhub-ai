@@ -1,3 +1,7 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 interface PaginationProps {
   page: number;
   totalPages: number;
@@ -10,18 +14,38 @@ export function Pagination({ page, totalPages, onChange }: PaginationProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="pagination">
-      <button onClick={() => onChange(page - 1)} disabled={page === 1} aria-label="Previous page">
-        ‹
-      </button>
+    <div className="mt-9 flex items-center justify-center gap-1.5">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => onChange(page - 1)}
+        disabled={page === 1}
+        aria-label="Previous page"
+        className="rounded-full"
+      >
+        <ChevronLeft />
+      </Button>
       {pages.map((p) => (
-        <button key={p} className={p === page ? "active" : ""} onClick={() => onChange(p)}>
+        <Button
+          key={p}
+          variant={p === page ? "default" : "outline"}
+          size="icon"
+          onClick={() => onChange(p)}
+          className={cn("rounded-full font-bold", p === page && "pointer-events-none")}
+        >
           {p}
-        </button>
+        </Button>
       ))}
-      <button onClick={() => onChange(page + 1)} disabled={page === totalPages} aria-label="Next page">
-        ›
-      </button>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => onChange(page + 1)}
+        disabled={page === totalPages}
+        aria-label="Next page"
+        className="rounded-full"
+      >
+        <ChevronRight />
+      </Button>
     </div>
   );
 }
