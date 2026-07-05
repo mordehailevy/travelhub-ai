@@ -49,7 +49,7 @@ export function McpChatPage() {
         </p>
       </div>
 
-      <Card className="max-w-[640px] p-7">
+      <Card className="mx-auto max-w-[640px] p-7">
         <CardContent className="px-0">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">

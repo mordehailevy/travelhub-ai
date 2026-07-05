@@ -8,7 +8,7 @@ export function AboutPage() {
         <h1 className="page-title">About</h1>
       </div>
 
-      <Card className="max-w-[640px] p-9">
+      <Card className="mx-auto max-w-[640px] p-9">
         <CardContent className="flex flex-col gap-3 px-0">
           <h2 className="font-heading font-extrabold text-primary">TravelHub AI</h2>
           <p>
