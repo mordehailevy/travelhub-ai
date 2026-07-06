@@ -13,20 +13,20 @@ import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 // Landing is public/anonymous, and GET /api/vacations requires a JWT, so this
 // list is hardcoded rather than fetched.
 const DESTINATIONS = [
-  { destination: "Rome, Italy", imageFileName: "rome.svg" },
-  { destination: "Rhodes, Greece", imageFileName: "rhodes.svg" },
-  { destination: "Lahaina, Hawaii", imageFileName: "lahaina.svg" },
-  { destination: "Corfu, Greece", imageFileName: "corfu.svg" },
-  { destination: "Hilo, Hawaii", imageFileName: "hilo.svg" },
-  { destination: "Montego Bay, Jamaica", imageFileName: "montego-bay.svg" },
-  { destination: "Barcelona, Spain", imageFileName: "barcelona.svg" },
-  { destination: "Paris, France", imageFileName: "paris.svg" },
-  { destination: "Kyoto, Japan", imageFileName: "kyoto.svg" },
-  { destination: "Puerto Rico Island", imageFileName: "puerto-rico.svg" },
-  { destination: "Las Vegas, Nevada", imageFileName: "las-vegas.svg" },
-  { destination: "Kailua-Kona, Hawaii", imageFileName: "kailua-kona.svg" },
-  { destination: "Honolulu, Hawaii", imageFileName: "honolulu.svg" },
-  { destination: "Port Antonio, Jamaica", imageFileName: "port-antonio.svg" },
+  { destination: "Rome, Italy", imageFileName: "rome.jpg" },
+  { destination: "Rhodes, Greece", imageFileName: "rhodes.jpg" },
+  { destination: "Lahaina, Hawaii", imageFileName: "lahaina.jpg" },
+  { destination: "Corfu, Greece", imageFileName: "corfu.jpg" },
+  { destination: "Hilo, Hawaii", imageFileName: "hilo.jpg" },
+  { destination: "Montego Bay, Jamaica", imageFileName: "montego-bay.jpg" },
+  { destination: "Barcelona, Spain", imageFileName: "barcelona.jpg" },
+  { destination: "Paris, France", imageFileName: "paris.jpg" },
+  { destination: "Kyoto, Japan", imageFileName: "kyoto.jpg" },
+  { destination: "Puerto Rico Island", imageFileName: "puerto-rico.jpg" },
+  { destination: "Las Vegas, Nevada", imageFileName: "las-vegas.jpg" },
+  { destination: "Kailua-Kona, Hawaii", imageFileName: "kailua-kona.jpg" },
+  { destination: "Honolulu, Hawaii", imageFileName: "honolulu.jpg" },
+  { destination: "Port Antonio, Jamaica", imageFileName: "port-antonio.jpg" },
 ];
 
 const FEATURES = [

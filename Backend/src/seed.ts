@@ -19,7 +19,7 @@ const vacations = [
     startDate: daysFromNow(-30),
     endDate: daysFromNow(-20),
     price: 1931,
-    imageFileName: "rome.svg",
+    imageFileName: "rome.jpg",
   },
   {
     destination: "Rhodes, Greece",
@@ -28,7 +28,7 @@ const vacations = [
     startDate: daysFromNow(-10),
     endDate: daysFromNow(4),
     price: 462,
-    imageFileName: "rhodes.svg",
+    imageFileName: "rhodes.jpg",
   },
   {
     destination: "Lahaina, Hawaii",
@@ -37,7 +37,7 @@ const vacations = [
     startDate: daysFromNow(-3),
     endDate: daysFromNow(12),
     price: 1049,
-    imageFileName: "lahaina.svg",
+    imageFileName: "lahaina.jpg",
   },
   {
     destination: "Corfu, Greece",
@@ -46,7 +46,7 @@ const vacations = [
     startDate: daysFromNow(15),
     endDate: daysFromNow(29),
     price: 799,
-    imageFileName: "corfu.svg",
+    imageFileName: "corfu.jpg",
   },
   {
     destination: "Hilo, Hawaii",
@@ -55,7 +55,7 @@ const vacations = [
     startDate: daysFromNow(20),
     endDate: daysFromNow(34),
     price: 1120,
-    imageFileName: "hilo.svg",
+    imageFileName: "hilo.jpg",
   },
   {
     destination: "Montego Bay, Jamaica",
@@ -64,7 +64,7 @@ const vacations = [
     startDate: daysFromNow(40),
     endDate: daysFromNow(54),
     price: 1049,
-    imageFileName: "montego-bay.svg",
+    imageFileName: "montego-bay.jpg",
   },
   {
     destination: "Barcelona, Spain",
@@ -73,7 +73,7 @@ const vacations = [
     startDate: daysFromNow(55),
     endDate: daysFromNow(63),
     price: 890,
-    imageFileName: "barcelona.svg",
+    imageFileName: "barcelona.jpg",
   },
   {
     destination: "Paris, France",
@@ -82,7 +82,7 @@ const vacations = [
     startDate: daysFromNow(65),
     endDate: daysFromNow(72),
     price: 1250,
-    imageFileName: "paris.svg",
+    imageFileName: "paris.jpg",
   },
   {
     destination: "Kyoto, Japan",
@@ -91,7 +91,7 @@ const vacations = [
     startDate: daysFromNow(80),
     endDate: daysFromNow(92),
     price: 2400,
-    imageFileName: "kyoto.svg",
+    imageFileName: "kyoto.jpg",
   },
   {
     destination: "Puerto Rico Island",
@@ -100,7 +100,7 @@ const vacations = [
     startDate: daysFromNow(6),
     endDate: daysFromNow(16),
     price: 980,
-    imageFileName: "puerto-rico.svg",
+    imageFileName: "puerto-rico.jpg",
   },
   {
     destination: "Las Vegas, Nevada",
@@ -109,7 +109,7 @@ const vacations = [
     startDate: daysFromNow(100),
     endDate: daysFromNow(105),
     price: 650,
-    imageFileName: "las-vegas.svg",
+    imageFileName: "las-vegas.jpg",
   },
   {
     destination: "Kailua-Kona, Hawaii",
@@ -118,7 +118,7 @@ const vacations = [
     startDate: daysFromNow(-60),
     endDate: daysFromNow(-48),
     price: 1340,
-    imageFileName: "kailua-kona.svg",
+    imageFileName: "kailua-kona.jpg",
   },
   {
     destination: "Honolulu, Hawaii",
@@ -127,7 +127,7 @@ const vacations = [
     startDate: daysFromNow(35),
     endDate: daysFromNow(45),
     price: 1180,
-    imageFileName: "honolulu.svg",
+    imageFileName: "honolulu.jpg",
   },
   {
     destination: "Port Antonio, Jamaica",
@@ -136,7 +136,7 @@ const vacations = [
     startDate: daysFromNow(110),
     endDate: daysFromNow(120),
     price: 940,
-    imageFileName: "port-antonio.svg",
+    imageFileName: "port-antonio.jpg",
   },
 ];
 
