@@ -22,6 +22,12 @@ const schema = z.object({
   // routes rather than failing at startup.
   STRIPE_SECRET_KEY: z.string().default(""),
   STRIPE_WEBHOOK_SECRET: z.string().default(""),
+  // Same lazy pattern: checked by cloudinaryClient.ts when an admin actually
+  // uploads an image, not at boot — local dev without Cloudinary configured
+  // still works for everything except new image uploads.
+  CLOUDINARY_CLOUD_NAME: z.string().default(""),
+  CLOUDINARY_API_KEY: z.string().default(""),
+  CLOUDINARY_API_SECRET: z.string().default(""),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -46,4 +52,7 @@ export const env = {
   clientOrigin: data.CLIENT_ORIGIN,
   stripeSecretKey: data.STRIPE_SECRET_KEY,
   stripeWebhookSecret: data.STRIPE_WEBHOOK_SECRET,
+  cloudinaryCloudName: data.CLOUDINARY_CLOUD_NAME,
+  cloudinaryApiKey: data.CLOUDINARY_API_KEY,
+  cloudinaryApiSecret: data.CLOUDINARY_API_SECRET,
 };

@@ -48,6 +48,12 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 }
 
 export function imageUrl(fileName: string): string {
+  // Admin-uploaded images are stored on Cloudinary and come back as full
+  // URLs; only the 14 git-committed seed images are bare filenames served
+  // from the backend's own /uploads.
+  if (fileName.startsWith("http://") || fileName.startsWith("https://")) {
+    return fileName;
+  }
   return `${API_URL}/uploads/${fileName}`;
 }
 

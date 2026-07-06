@@ -1,13 +1,12 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
 import { Types } from "mongoose";
 import { Vacation } from "../models/Vacation";
 import { Like } from "../models/Like";
 import { authGuard, adminGuard, AuthRequest } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
-import { upload, uploadsDir } from "../middleware/upload";
+import { upload } from "../middleware/upload";
 import { validateVacationInput } from "../utils/vacationValidation";
+import { uploadImageBuffer, deleteImageByUrl, isCloudinaryUrl } from "../services/cloudinaryClient";
 
 export const vacationsRouter = Router();
 
@@ -138,14 +137,15 @@ vacationsRouter.post("/", authGuard, adminGuard, upload.single("image"), async (
     if (!req.file) throw new ApiError(400, "Cover image is required");
     const validated = validateVacationInput(req.body, { allowPastDates: false });
 
+    const imageUrl = await uploadImageBuffer(req.file.buffer, req.file.mimetype);
+
     const vacation = await Vacation.create({
       ...validated,
-      imageFileName: req.file.filename,
+      imageFileName: imageUrl,
     });
 
     res.status(201).json(vacation);
   } catch (err) {
-    if (req.file) fs.unlink(path.join(uploadsDir, req.file.filename), () => undefined);
     next(err);
   }
 });
@@ -158,19 +158,20 @@ vacationsRouter.put("/:id", authGuard, adminGuard, upload.single("image"), async
     const validated = validateVacationInput(req.body, { allowPastDates: true });
 
     const previousImage = vacation.imageFileName;
+    const newImageUrl = req.file ? await uploadImageBuffer(req.file.buffer, req.file.mimetype) : undefined;
+
     vacation.set({
       ...validated,
-      imageFileName: req.file ? req.file.filename : vacation.imageFileName,
+      imageFileName: newImageUrl ?? vacation.imageFileName,
     });
     await vacation.save();
 
-    if (req.file && previousImage) {
-      fs.unlink(path.join(uploadsDir, previousImage), () => undefined);
+    if (newImageUrl && previousImage && isCloudinaryUrl(previousImage)) {
+      deleteImageByUrl(previousImage).catch(() => undefined);
     }
 
     res.json(vacation);
   } catch (err) {
-    if (req.file) fs.unlink(path.join(uploadsDir, req.file.filename), () => undefined);
     next(err);
   }
 });
@@ -181,7 +182,9 @@ vacationsRouter.delete("/:id", authGuard, adminGuard, async (req, res, next) => 
     if (!vacation) throw new ApiError(404, "Vacation not found");
 
     await Like.deleteMany({ vacationId: vacation._id });
-    fs.unlink(path.join(uploadsDir, vacation.imageFileName), () => undefined);
+    if (isCloudinaryUrl(vacation.imageFileName)) {
+      deleteImageByUrl(vacation.imageFileName).catch(() => undefined);
+    }
 
     res.status(204).send();
   } catch (err) {
