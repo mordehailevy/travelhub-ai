@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export interface VacationFormValues {
   destination: string;
   description: string;
+  details: string;
   startDate: string;
   endDate: string;
   price: string;
@@ -33,6 +34,7 @@ function toDateInputValue(iso: string): string {
 export function VacationForm({ mode, initial, submitting, serverError, onSubmit, onCancel }: VacationFormProps) {
   const [destination, setDestination] = useState(initial?.destination ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
+  const [details, setDetails] = useState(initial?.details ?? "");
   const [startDate, setStartDate] = useState(initial ? toDateInputValue(initial.startDate) : "");
   const [endDate, setEndDate] = useState(initial ? toDateInputValue(initial.endDate) : "");
   const [price, setPrice] = useState(initial ? String(initial.price) : "");
@@ -63,7 +65,7 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
       return;
     }
 
-    onSubmit({ destination, description, startDate, endDate, price, image });
+    onSubmit({ destination, description, details, startDate, endDate, price, image });
   };
 
   const error = clientError ?? serverError;
@@ -91,6 +93,16 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="details">Full details (shown in "More info") — optional</Label>
+            <Textarea
+              id="details"
+              rows={8}
+              placeholder="Supports basic markdown: ## headings, - bullet lists, **bold**."
+              value={details}
+              onChange={(e) => setDetails(e.target.value)}
             />
           </div>
           <div className="flex flex-col gap-1.5">

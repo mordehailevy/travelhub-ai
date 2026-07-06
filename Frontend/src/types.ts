@@ -17,6 +17,7 @@ export interface Vacation {
   _id: string;
   destination: string;
   description: string;
+  details?: string;
   startDate: string;
   endDate: string;
   price: number;

@@ -16,6 +16,7 @@ export function AddVacationPage() {
     const formData = new FormData();
     formData.append("destination", values.destination);
     formData.append("description", values.description);
+    formData.append("details", values.details);
     formData.append("startDate", values.startDate);
     formData.append("endDate", values.endDate);
     formData.append("price", values.price);

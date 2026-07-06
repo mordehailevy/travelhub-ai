@@ -4,6 +4,10 @@ export interface IVacation extends Document {
   _id: Types.ObjectId;
   destination: string;
   description: string;
+  // Longer, markdown-formatted write-up shown in the "More info" dialog.
+  // Optional and separate from `description` (the short card teaser) so
+  // existing/admin-created vacations without it still render fine.
+  details?: string;
   startDate: Date;
   endDate: Date;
   price: number;
@@ -14,6 +18,7 @@ const vacationSchema = new Schema<IVacation>(
   {
     destination: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
+    details: { type: String, trim: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     price: { type: Number, required: true, min: 0, max: 10000 },

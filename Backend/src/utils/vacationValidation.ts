@@ -3,6 +3,7 @@ import { ApiError } from "../middleware/errorHandler";
 interface VacationInput {
   destination?: string;
   description?: string;
+  details?: string;
   startDate?: string;
   endDate?: string;
   price?: string | number;
@@ -11,6 +12,7 @@ interface VacationInput {
 export interface ValidatedVacation {
   destination: string;
   description: string;
+  details?: string;
   startDate: Date;
   endDate: Date;
   price: number;
@@ -20,7 +22,7 @@ export function validateVacationInput(
   input: VacationInput,
   { allowPastDates }: { allowPastDates: boolean }
 ): ValidatedVacation {
-  const { destination, description, startDate, endDate, price } = input;
+  const { destination, description, details, startDate, endDate, price } = input;
 
   if (!destination?.trim()) throw new ApiError(400, "Destination is required");
   if (!description?.trim()) throw new ApiError(400, "Description is required");
@@ -56,6 +58,7 @@ export function validateVacationInput(
   return {
     destination: destination.trim(),
     description: description.trim(),
+    details: details?.trim() || undefined,
     startDate: start,
     endDate: end,
     price: numericPrice,
