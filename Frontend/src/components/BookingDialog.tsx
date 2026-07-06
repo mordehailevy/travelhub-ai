@@ -67,7 +67,7 @@ export function BookingDialog({ vacation, onOpenChange }: BookingDialogProps) {
             <Button
               type="button"
               variant="outline"
-              size="icon-sm"
+              size="icon"
               onClick={() => setTravelerCount((c) => Math.max(1, c - 1))}
               disabled={travelerCount <= 1}
               aria-label="Fewer travelers"
@@ -78,7 +78,7 @@ export function BookingDialog({ vacation, onOpenChange }: BookingDialogProps) {
             <Button
               type="button"
               variant="outline"
-              size="icon-sm"
+              size="icon"
               onClick={() => setTravelerCount((c) => Math.min(6, c + 1))}
               disabled={travelerCount >= 6}
               aria-label="More travelers"

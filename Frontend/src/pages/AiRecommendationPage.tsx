@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import ReactMarkdown from "react-markdown";
 import { getAiRecommendation } from "../api/ai";
 import { ApiClientError } from "../api/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,8 +63,8 @@ export function AiRecommendationPage() {
             </Alert>
           )}
           {recommendation && (
-            <div className="mt-5 whitespace-pre-wrap border-t border-border pt-5 text-[0.94rem] leading-relaxed">
-              {recommendation}
+            <div className="prose prose-sm mt-5 max-w-none border-t border-border pt-5 text-foreground prose-headings:font-heading prose-headings:text-foreground prose-strong:text-foreground">
+              <ReactMarkdown>{recommendation}</ReactMarkdown>
             </div>
           )}
         </CardContent>
