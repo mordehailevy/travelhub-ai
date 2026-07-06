@@ -28,6 +28,9 @@ const EditVacationPage = lazy(() =>
   import("./pages/EditVacationPage").then((m) => ({ default: m.EditVacationPage }))
 );
 const ReportPage = lazy(() => import("./pages/ReportPage").then((m) => ({ default: m.ReportPage })));
+const AdminBookingsPage = lazy(() =>
+  import("./pages/AdminBookingsPage").then((m) => ({ default: m.AdminBookingsPage }))
+);
 
 function AdminPageFallback() {
   return <Skeleton className="h-96 w-full rounded-xl" />;
@@ -91,6 +94,14 @@ function App() {
                 element={
                   <Suspense fallback={<AdminPageFallback />}>
                     <ReportPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/bookings"
+                element={
+                  <Suspense fallback={<AdminPageFallback />}>
+                    <AdminBookingsPage />
                   </Suspense>
                 }
               />

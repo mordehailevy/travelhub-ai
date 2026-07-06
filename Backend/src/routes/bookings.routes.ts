@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { z } from "zod";
 import { Vacation } from "../models/Vacation";
 import { Booking } from "../models/Booking";
-import { authGuard, AuthRequest } from "../middleware/auth";
+import { authGuard, adminGuard, AuthRequest } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { getStripeClient, toCleanStripeError } from "../services/stripeClient";
 import { env } from "../config/env";
@@ -137,6 +137,17 @@ bookingsRouter.get("/session/:sessionId", authGuard, async (req: AuthRequest, re
 bookingsRouter.get("/", authGuard, async (req: AuthRequest, res, next) => {
   try {
     const bookings = await Booking.find({ userId: req.user!.userId }).sort({ createdAt: -1 });
+    res.json(bookings);
+  } catch (err) {
+    next(err);
+  }
+});
+
+bookingsRouter.get("/admin/all", authGuard, adminGuard, async (_req, res, next) => {
+  try {
+    const bookings = await Booking.find({})
+      .sort({ createdAt: -1 })
+      .populate("userId", "firstName lastName email");
     res.json(bookings);
   } catch (err) {
     next(err);

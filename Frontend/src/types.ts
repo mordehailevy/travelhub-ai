@@ -54,3 +54,12 @@ export interface Booking {
   confirmationCode: string;
   createdAt: string;
 }
+
+export interface AdminBooking extends Booking {
+  userId: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  } | null;
+}
