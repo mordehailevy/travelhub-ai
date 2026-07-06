@@ -11,6 +11,8 @@ import { AiRecommendationPage } from "./pages/AiRecommendationPage";
 import { McpChatPage } from "./pages/McpChatPage";
 import { ProfilPage } from "./pages/ProfilPage";
 import { AboutPage } from "./pages/AboutPage";
+import { BookingSuccessPage } from "./pages/BookingSuccessPage";
+import { BookingCancelPage } from "./pages/BookingCancelPage";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Admin-only surfaces (incl. the recharts-based report) are lazy-loaded:
@@ -51,6 +53,8 @@ function App() {
               <Route path="/ai-recommendation" element={<AiRecommendationPage />} />
               <Route path="/ask" element={<McpChatPage />} />
               <Route path="/profil" element={<ProfilPage />} />
+              <Route path="/booking/success" element={<BookingSuccessPage />} />
+              <Route path="/booking/cancel" element={<BookingCancelPage />} />
             </Route>
 
             <Route element={<AdminRoute />}>

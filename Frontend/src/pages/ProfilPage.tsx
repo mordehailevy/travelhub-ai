@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { fetchVacations, unlikeVacation } from "../api/vacations";
-import type { Vacation, VacationsPage as VacationsPageData } from "../types";
-import { getBookings, removeBooking, type Booking } from "@/lib/bookings";
+import { fetchMyBookings, cancelBooking } from "../api/bookings";
+import type { Vacation, VacationsPage as VacationsPageData, Booking } from "../types";
 import { VacationCard } from "../components/VacationCard";
 import { Pagination } from "../components/Pagination";
 import { Card, CardContent } from "@/components/ui/card";
@@ -83,27 +83,55 @@ function LikedVacationsTab() {
   );
 }
 
-function BookingsTab({ userId }: { userId: string }) {
-  const [bookings, setBookings] = useState<Booking[]>(() => getBookings(userId));
+const statusVariant: Record<Booking["status"], "default" | "outline" | "secondary"> = {
+  confirmed: "default",
+  pending: "secondary",
+  canceled: "outline",
+};
 
-  const handleRemove = (id: string) => {
-    removeBooking(userId, id);
-    setBookings(getBookings(userId));
+function BookingsTab() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadBookings = () => {
+    setLoading(true);
+    fetchMyBookings()
+      .then(setBookings)
+      .finally(() => setLoading(false));
   };
 
+  useEffect(() => {
+    loadBookings();
+  }, []);
+
+  const handleRemove = async (id: string) => {
+    await cancelBooking(id);
+    loadBookings();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-3">
+        {Array.from({ length: 2 }, (_, i) => (
+          <Skeleton key={i} className="h-24 w-full rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
   if (bookings.length === 0) {
-    return <p className="py-10 text-center italic text-muted-foreground">No demo bookings yet.</p>;
+    return <p className="py-10 text-center italic text-muted-foreground">No bookings yet.</p>;
   }
 
   return (
     <div className="flex flex-col gap-3">
       {bookings.map((booking) => (
-        <Card key={booking.id} className="p-4">
+        <Card key={booking._id} className="p-4">
           <CardContent className="flex items-center justify-between gap-4 px-0">
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-heading font-extrabold text-foreground">{booking.destination}</p>
-                <Badge variant="outline">Demo booking</Badge>
+                <Badge variant={statusVariant[booking.status]}>{booking.status}</Badge>
               </div>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
                 {formatDate(booking.startDate)} – {formatDate(booking.endDate)} · {booking.travelerCount} traveler
@@ -111,9 +139,16 @@ function BookingsTab({ userId }: { userId: string }) {
                 {booking.confirmationCode}
               </p>
             </div>
-            <Button variant="ghost" size="icon" aria-label="Remove booking" onClick={() => handleRemove(booking.id)}>
-              <Trash2 />
-            </Button>
+            {booking.status !== "canceled" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Cancel booking"
+                onClick={() => handleRemove(booking._id)}
+              >
+                <Trash2 />
+              </Button>
+            )}
           </CardContent>
         </Card>
       ))}
@@ -159,7 +194,7 @@ export function ProfilPage() {
           <LikedVacationsTab />
         </TabsContent>
         <TabsContent value="bookings" className="pt-5">
-          <BookingsTab userId={user._id} />
+          <BookingsTab />
         </TabsContent>
       </Tabs>
     </div>

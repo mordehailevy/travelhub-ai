@@ -9,6 +9,7 @@ import { vacationsRouter } from "./routes/vacations.routes";
 import { reportsRouter } from "./routes/reports.routes";
 import { aiRouter } from "./routes/ai.routes";
 import { mcpRouter } from "./routes/mcp.routes";
+import { bookingsRouter } from "./routes/bookings.routes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 export function createApp(): Express {
@@ -19,6 +20,11 @@ export function createApp(): Express {
   // cross-origin — helmet's same-origin CORP default would block <img> tags.
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
   app.use(cors({ origin: env.clientOrigin }));
+
+  // Stripe's webhook signature check needs the untouched raw body, so this
+  // path must be parsed with express.raw() before the global express.json()
+  // below would otherwise consume and reformat it.
+  app.use("/api/bookings/webhook", express.raw({ type: "application/json" }));
   app.use(express.json());
   app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
@@ -35,6 +41,7 @@ export function createApp(): Express {
   app.use("/api/reports", reportsRouter);
   app.use("/api/ai", aiRouter);
   app.use("/api/mcp", mcpRouter);
+  app.use("/api/bookings", bookingsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

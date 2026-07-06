@@ -17,6 +17,11 @@ const schema = z.object({
   OPENAI_API_KEY: z.string().default(""),
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
   CLIENT_ORIGIN: z.string().default("http://localhost:5173"),
+  // Empty-allowed like OPENAI_API_KEY: checked lazily by stripeClient.ts so
+  // the server still boots without Stripe configured, just 503s on booking
+  // routes rather than failing at startup.
+  STRIPE_SECRET_KEY: z.string().default(""),
+  STRIPE_WEBHOOK_SECRET: z.string().default(""),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -39,4 +44,6 @@ export const env = {
   openaiApiKey: data.OPENAI_API_KEY,
   openaiModel: data.OPENAI_MODEL,
   clientOrigin: data.CLIENT_ORIGIN,
+  stripeSecretKey: data.STRIPE_SECRET_KEY,
+  stripeWebhookSecret: data.STRIPE_WEBHOOK_SECRET,
 };

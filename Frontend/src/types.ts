@@ -39,3 +39,18 @@ export interface LikesReportRow {
   destination: string;
   likes: number;
 }
+
+export type BookingStatus = "pending" | "confirmed" | "canceled";
+
+export interface Booking {
+  _id: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  travelerCount: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: BookingStatus;
+  confirmationCode: string;
+  createdAt: string;
+}
