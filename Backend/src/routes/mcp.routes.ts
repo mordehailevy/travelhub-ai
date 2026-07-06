@@ -6,8 +6,11 @@ import { ApiError } from "../middleware/errorHandler";
 import { getOpenAiClient, toCleanAiError } from "../services/openaiClient";
 import { getMcpClient } from "../mcp/client";
 import { env } from "../config/env";
+import { aiLimiter } from "../middleware/rateLimit";
 
 export const mcpRouter = Router();
+
+mcpRouter.use(aiLimiter);
 
 const askSchema = z.object({
   question: z.string().min(1, "Question is required"),

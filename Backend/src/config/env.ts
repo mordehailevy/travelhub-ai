@@ -1,21 +1,42 @@
 import dotenv from "dotenv";
+import { z } from "zod";
 
 dotenv.config();
 
-function required(name: string, fallback?: string): string {
-  const value = process.env[name] ?? fallback;
-  if (value === undefined) {
-    throw new Error(`Missing required environment variable: ${name}`);
+const isProduction = process.env.NODE_ENV === "production";
+
+const schema = z.object({
+  PORT: z.coerce.number().default(4000),
+  MONGO_URI: isProduction
+    ? z.string().min(1, "MONGO_URI is required in production")
+    : z.string().default("mongodb://localhost:27017/travelhub"),
+  JWT_SECRET: isProduction
+    ? z.string().min(32, "JWT_SECRET must be at least 32 characters in production")
+    : z.string().default("dev-secret-change-me"),
+  JWT_EXPIRES_IN: z.string().default("7d"),
+  OPENAI_API_KEY: z.string().default(""),
+  OPENAI_MODEL: z.string().default("gpt-4o-mini"),
+  CLIENT_ORIGIN: z.string().default("http://localhost:5173"),
+});
+
+const parsed = schema.safeParse(process.env);
+
+if (!parsed.success) {
+  console.error("[env] Invalid environment configuration:");
+  for (const issue of parsed.error.issues) {
+    console.error(`  - ${issue.path.join(".")}: ${issue.message}`);
   }
-  return value;
+  throw new Error("Missing or invalid required environment variables. See errors above.");
 }
 
+const data = parsed.data;
+
 export const env = {
-  port: Number(process.env.PORT ?? 4000),
-  mongoUri: required("MONGO_URI", "mongodb://localhost:27017/travelhub"),
-  jwtSecret: required("JWT_SECRET", "dev-secret-change-me"),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
-  openaiApiKey: process.env.OPENAI_API_KEY ?? "",
-  openaiModel: process.env.OPENAI_MODEL ?? "gpt-4o-mini",
-  clientOrigin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+  port: data.PORT,
+  mongoUri: data.MONGO_URI,
+  jwtSecret: data.JWT_SECRET,
+  jwtExpiresIn: data.JWT_EXPIRES_IN,
+  openaiApiKey: data.OPENAI_API_KEY,
+  openaiModel: data.OPENAI_MODEL,
+  clientOrigin: data.CLIENT_ORIGIN,
 };

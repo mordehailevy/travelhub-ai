@@ -4,8 +4,11 @@ import { z } from "zod";
 import { User } from "../models/User";
 import { signToken } from "../utils/jwt";
 import { ApiError } from "../middleware/errorHandler";
+import { authLimiter } from "../middleware/rateLimit";
 
 export const authRouter = Router();
+
+authRouter.use(authLimiter);
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),

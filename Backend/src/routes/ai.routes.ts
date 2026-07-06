@@ -4,8 +4,11 @@ import { authGuard } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { getOpenAiClient, toCleanAiError } from "../services/openaiClient";
 import { env } from "../config/env";
+import { aiLimiter } from "../middleware/rateLimit";
 
 export const aiRouter = Router();
+
+aiRouter.use(aiLimiter);
 
 const recommendSchema = z.object({
   destination: z.string().min(1, "Destination is required"),
