@@ -17,6 +17,7 @@ interface UserCardProps {
   onToggleLike: (vacation: Vacation) => void;
   likeLoading?: boolean;
   onBook?: (vacation: Vacation) => void;
+  onMoreInfo?: (vacation: Vacation) => void;
 }
 
 interface AdminCardProps {
@@ -92,10 +93,19 @@ export function VacationCard(props: VacationCardProps) {
             </div>
           )}
 
-          {props.mode === "user" && props.onBook && (
-            <Button size="sm" className="mt-1" onClick={() => props.onBook?.(vacation)}>
-              Book this trip
-            </Button>
+          {props.mode === "user" && (props.onBook || props.onMoreInfo) && (
+            <div className="mt-1 flex gap-2">
+              {props.onMoreInfo && (
+                <Button size="sm" variant="outline" onClick={() => props.onMoreInfo?.(vacation)}>
+                  More info
+                </Button>
+              )}
+              {props.onBook && (
+                <Button size="sm" onClick={() => props.onBook?.(vacation)}>
+                  Book this trip
+                </Button>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>

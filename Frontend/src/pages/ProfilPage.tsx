@@ -6,6 +6,7 @@ import { fetchMyBookings, cancelBooking } from "../api/bookings";
 import type { Vacation, VacationsPage as VacationsPageData, Booking } from "../types";
 import { VacationCard } from "../components/VacationCard";
 import { Pagination } from "../components/Pagination";
+import { VacationDetailsDialog } from "../components/VacationDetailsDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,7 @@ function LikedVacationsTab() {
   const [result, setResult] = useState<VacationsPageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [likingId, setLikingId] = useState<string | null>(null);
+  const [detailsVacation, setDetailsVacation] = useState<Vacation | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,10 +77,12 @@ function LikedVacationsTab() {
             mode="user"
             onToggleLike={handleToggleLike}
             likeLoading={likingId === vacation._id}
+            onMoreInfo={setDetailsVacation}
           />
         ))}
       </div>
       <Pagination page={result.page} totalPages={result.totalPages} onChange={setPage} />
+      <VacationDetailsDialog vacation={detailsVacation} onOpenChange={(open) => !open && setDetailsVacation(null)} />
     </>
   );
 }

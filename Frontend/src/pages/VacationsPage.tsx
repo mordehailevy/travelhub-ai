@@ -5,6 +5,7 @@ import type { Vacation, VacationFilter, VacationsPage as VacationsPageData } fro
 import { VacationCard } from "../components/VacationCard";
 import { Pagination } from "../components/Pagination";
 import { BookingDialog } from "../components/BookingDialog";
+import { VacationDetailsDialog } from "../components/VacationDetailsDialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -24,6 +25,7 @@ export function VacationsPage() {
   const [likingId, setLikingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [bookingVacation, setBookingVacation] = useState<Vacation | null>(null);
+  const [detailsVacation, setDetailsVacation] = useState<Vacation | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,6 +148,7 @@ export function VacationsPage() {
                   onToggleLike={handleToggleLike}
                   likeLoading={likingId === vacation._id}
                   onBook={setBookingVacation}
+                  onMoreInfo={setDetailsVacation}
                 />
               </motion.div>
             ))}
@@ -155,6 +158,11 @@ export function VacationsPage() {
       )}
 
       <BookingDialog vacation={bookingVacation} onOpenChange={(open) => !open && setBookingVacation(null)} />
+      <VacationDetailsDialog
+        vacation={detailsVacation}
+        onOpenChange={(open) => !open && setDetailsVacation(null)}
+        onBook={setBookingVacation}
+      />
     </div>
   );
 }
