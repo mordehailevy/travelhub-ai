@@ -28,6 +28,11 @@ const schema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().default(""),
   CLOUDINARY_API_KEY: z.string().default(""),
   CLOUDINARY_API_SECRET: z.string().default(""),
+  // Same lazy pattern again: checked by resendClient.ts when a password
+  // reset is actually requested — local dev without Resend configured still
+  // works for everything else.
+  RESEND_API_KEY: z.string().default(""),
+  EMAIL_FROM: z.string().default("TravelHub AI <onboarding@resend.dev>"),
 });
 
 const parsed = schema.safeParse(process.env);
@@ -55,4 +60,6 @@ export const env = {
   cloudinaryCloudName: data.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: data.CLOUDINARY_API_KEY,
   cloudinaryApiSecret: data.CLOUDINARY_API_SECRET,
+  resendApiKey: data.RESEND_API_KEY,
+  emailFrom: data.EMAIL_FROM,
 };

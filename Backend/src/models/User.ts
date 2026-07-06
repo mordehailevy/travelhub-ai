@@ -9,6 +9,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
+  resetPasswordTokenHash?: string;
+  resetPasswordExpires?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -25,6 +27,8 @@ const userSchema = new Schema<IUser>(
     },
     password: { type: String, required: true, minlength: 4 },
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    resetPasswordTokenHash: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
   },
   { timestamps: true }
 );
@@ -32,6 +36,8 @@ const userSchema = new Schema<IUser>(
 userSchema.set("toJSON", {
   transform: (_doc, ret: any) => {
     delete ret.password;
+    delete ret.resetPasswordTokenHash;
+    delete ret.resetPasswordExpires;
     return ret;
   },
 });
