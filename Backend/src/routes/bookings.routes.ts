@@ -82,6 +82,9 @@ bookingsRouter.post("/checkout", authGuard, async (req: AuthRequest, res, next) 
     if (err instanceof z.ZodError) {
       return next(new ApiError(400, err.issues[0]?.message ?? "Invalid input"));
     }
+    if (err instanceof ApiError) {
+      return next(err);
+    }
     next(toCleanStripeError(err));
   }
 });
@@ -145,6 +148,9 @@ bookingsRouter.get("/session/:sessionId", authGuard, async (req: AuthRequest, re
 
     res.json(booking);
   } catch (err) {
+    if (err instanceof ApiError) {
+      return next(err);
+    }
     next(toCleanStripeError(err));
   }
 });
@@ -199,6 +205,9 @@ bookingsRouter.patch("/admin/:id/cancel", authGuard, adminGuard, async (req, res
 
     res.json(booking);
   } catch (err) {
+    if (err instanceof ApiError) {
+      return next(err);
+    }
     next(toCleanStripeError(err));
   }
 });
