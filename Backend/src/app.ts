@@ -10,6 +10,7 @@ import { reportsRouter } from "./routes/reports.routes";
 import { aiRouter } from "./routes/ai.routes";
 import { mcpRouter } from "./routes/mcp.routes";
 import { bookingsRouter } from "./routes/bookings.routes";
+import { usersRouter } from "./routes/users.routes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 export function createApp(): Express {
@@ -42,6 +43,7 @@ export function createApp(): Express {
   app.use("/api/ai", aiRouter);
   app.use("/api/mcp", mcpRouter);
   app.use("/api/bookings", bookingsRouter);
+  app.use("/api/users", usersRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

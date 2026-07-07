@@ -23,3 +23,7 @@ export function checkSessionStatus(sessionId: string): Promise<Booking> {
 export function fetchAllBookingsAdmin(): Promise<AdminBooking[]> {
   return apiRequest<AdminBooking[]>("/api/bookings/admin/all");
 }
+
+export function cancelBookingAdmin(id: string): Promise<AdminBooking> {
+  return apiRequest<AdminBooking>(`/api/bookings/admin/${id}/cancel`, { method: "PATCH" });
+}

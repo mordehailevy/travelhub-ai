@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import { fetchAllBookingsAdmin } from "../api/bookings";
+import { fetchAllBookingsAdmin, cancelBookingAdmin } from "../api/bookings";
+import { ApiClientError } from "../api/client";
 import type { AdminBooking } from "../types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -20,6 +32,8 @@ export function AdminBookingsPage() {
   const [bookings, setBookings] = useState<AdminBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingCancel, setPendingCancel] = useState<AdminBooking | null>(null);
+  const [cancelingId, setCancelingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAllBookingsAdmin()
@@ -27,6 +41,21 @@ export function AdminBookingsPage() {
       .catch(() => setError("Could not load bookings."))
       .finally(() => setLoading(false));
   }, []);
+
+  const confirmCancel = async () => {
+    if (!pendingCancel) return;
+    setCancelingId(pendingCancel._id);
+    setError(null);
+    try {
+      const updated = await cancelBookingAdmin(pendingCancel._id);
+      setBookings((prev) => prev.map((b) => (b._id === updated._id ? { ...b, status: updated.status } : b)));
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : "Could not cancel this booking.");
+    } finally {
+      setCancelingId(null);
+      setPendingCancel(null);
+    }
+  };
 
   const confirmedCount = bookings.filter((b) => b.status === "confirmed").length;
   const totalPaid = bookings
@@ -87,6 +116,7 @@ export function AdminBookingsPage() {
                 <th className="px-4 py-3">Amount</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Confirmation</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -114,12 +144,43 @@ export function AdminBookingsPage() {
                     <Badge variant={statusVariant[booking.status]}>{booking.status}</Badge>
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">{booking.confirmationCode}</td>
+                  <td className="px-4 py-3">
+                    {booking.status !== "canceled" && (
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        disabled={cancelingId === booking._id}
+                        onClick={() => setPendingCancel(booking)}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </Card>
       )}
+
+      <AlertDialog open={!!pendingCancel} onOpenChange={(open) => !open && setPendingCancel(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel booking for "{pendingCancel?.destination}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingCancel?.status === "confirmed"
+                ? "This traveler already paid — canceling will also refund their payment via Stripe. This cannot be undone."
+                : "This cannot be undone."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Back</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={confirmCancel}>
+              Cancel booking
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

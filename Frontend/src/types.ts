@@ -8,6 +8,10 @@ export interface User {
   role: UserRole;
 }
 
+export interface AdminUser extends User {
+  createdAt: string;
+}
+
 export interface AuthResponse {
   token: string;
   user: User;

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { deleteVacation, fetchAllVacationsAdmin } from "../api/vacations";
 import type { Vacation } from "../types";
 import { VacationCard } from "../components/VacationCard";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -23,7 +24,14 @@ export function AdminVacationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Vacation | null>(null);
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  const filteredVacations = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return vacations;
+    return vacations.filter((v) => v.destination.toLowerCase().includes(query));
+  }, [vacations, search]);
 
   const load = () => {
     setLoading(true);
@@ -65,6 +73,19 @@ export function AdminVacationsPage() {
         </Alert>
       )}
 
+      {!loading && vacations.length > 0 && (
+        <div className="relative mb-6 max-w-sm">
+          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search a destination…"
+            aria-label="Search a destination"
+            className="h-11 rounded-full pl-9"
+          />
+        </div>
+      )}
+
       {loading && (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
           {Array.from({ length: 6 }, (_, i) => (
@@ -84,9 +105,13 @@ export function AdminVacationsPage() {
         <p className="py-10 text-center italic text-muted-foreground">No vacations yet.</p>
       )}
 
-      {!loading && vacations.length > 0 && (
+      {!loading && vacations.length > 0 && filteredVacations.length === 0 && (
+        <p className="py-10 text-center italic text-muted-foreground">No vacations match "{search}".</p>
+      )}
+
+      {!loading && filteredVacations.length > 0 && (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
-          {vacations.map((vacation) => (
+          {filteredVacations.map((vacation) => (
             <VacationCard
               key={vacation._id}
               vacation={vacation}

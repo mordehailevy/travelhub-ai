@@ -167,3 +167,23 @@ bookingsRouter.delete("/:id", authGuard, async (req: AuthRequest, res, next) => 
     next(err);
   }
 });
+
+bookingsRouter.patch("/admin/:id/cancel", authGuard, adminGuard, async (req, res, next) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) throw new ApiError(404, "Booking not found");
+    if (booking.status === "canceled") throw new ApiError(400, "Booking is already canceled");
+
+    if (booking.status === "confirmed" && booking.stripePaymentIntentId) {
+      const stripe = getStripeClient();
+      await stripe.refunds.create({ payment_intent: booking.stripePaymentIntentId });
+    }
+
+    booking.status = "canceled";
+    await booking.save();
+
+    res.json(booking);
+  } catch (err) {
+    next(toCleanStripeError(err));
+  }
+});

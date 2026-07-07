@@ -78,6 +78,9 @@ export function Navbar() {
           <NavLink to="/admin/bookings" className={navLinkClass}>
             Bookings
           </NavLink>
+          <NavLink to="/admin/users" className={navLinkClass}>
+            Users
+          </NavLink>
           <NavLink to="/admin/report" className={navLinkClass}>
             Report
           </NavLink>
