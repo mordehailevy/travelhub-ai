@@ -9,6 +9,7 @@ import { authLimiter } from "../middleware/rateLimit";
 import { authGuard, AuthRequest } from "../middleware/auth";
 import { sendPasswordResetEmail } from "../services/resendClient";
 import { env } from "../config/env";
+import { isDemoEmail } from "../config/demoAccounts";
 
 export const authRouter = Router();
 
@@ -182,6 +183,10 @@ authRouter.patch("/me", authGuard, async (req: AuthRequest, res, next) => {
     const user = await User.findById(req.user!.userId);
     if (!user) throw new ApiError(404, "User not found");
 
+    if (isDemoEmail(user.email)) {
+      throw new ApiError(403, "This is a shared demo account and cannot be edited.");
+    }
+
     if (email !== user.email) {
       const existing = await User.findOne({ email });
       if (existing) throw new ApiError(409, "This email is already registered");
@@ -214,6 +219,10 @@ authRouter.patch("/me/password", authGuard, async (req: AuthRequest, res, next) 
 
     const user = await User.findById(req.user!.userId);
     if (!user) throw new ApiError(404, "User not found");
+
+    if (isDemoEmail(user.email)) {
+      throw new ApiError(403, "This is a shared demo account and cannot be edited.");
+    }
 
     const currentMatches = await bcrypt.compare(data.currentPassword, user.password);
     if (!currentMatches) throw new ApiError(401, "Current password is incorrect");

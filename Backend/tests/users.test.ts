@@ -83,3 +83,30 @@ describe("DELETE /api/users/:id", () => {
     expect(list.body.find((u: { _id: string }) => u._id === target.user._id)).toBeUndefined();
   });
 });
+
+describe("demo account protection", () => {
+  it("blocks changing the shared demo user's role", async () => {
+    const demoUser = await registerUser(app, { email: "user@travelhub.ai" });
+    const { email, password } = await createAdmin();
+    const { token } = await loginAs(app, email, password);
+
+    const res = await request(app)
+      .patch(`/api/users/${demoUser.user._id}/role`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ role: "admin" });
+
+    expect(res.status).toBe(403);
+  });
+
+  it("blocks deleting the shared demo user account", async () => {
+    const demoUser = await registerUser(app, { email: "user@travelhub.ai" });
+    const { email, password } = await createAdmin();
+    const { token } = await loginAs(app, email, password);
+
+    const res = await request(app)
+      .delete(`/api/users/${demoUser.user._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.status).toBe(403);
+  });
+});

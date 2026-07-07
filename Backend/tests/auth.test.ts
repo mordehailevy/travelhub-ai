@@ -145,3 +145,25 @@ describe("createAdmin helper", () => {
     expect(user.role).toBe("admin");
   });
 });
+
+describe("demo account protection", () => {
+  it("blocks profile edits on the shared demo user account", async () => {
+    const { token } = await registerUser(app, { email: "user@travelhub.ai" });
+    const res = await request(app)
+      .patch("/api/auth/me")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ firstName: "Hijacked", lastName: "Name", email: "hijacked@example.com" });
+
+    expect(res.status).toBe(403);
+  });
+
+  it("blocks password changes on the shared demo user account", async () => {
+    const { token, password } = await registerUser(app, { email: "user@travelhub.ai" });
+    const res = await request(app)
+      .patch("/api/auth/me/password")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ currentPassword: password, newPassword: "newpassword123" });
+
+    expect(res.status).toBe(403);
+  });
+});

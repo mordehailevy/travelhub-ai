@@ -4,6 +4,7 @@ import { User } from "../models/User";
 import { Like } from "../models/Like";
 import { authGuard, adminGuard, AuthRequest } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
+import { isDemoEmail } from "../config/demoAccounts";
 
 export const usersRouter = Router();
 
@@ -32,6 +33,10 @@ usersRouter.patch("/:id/role", async (req: AuthRequest, res, next) => {
     const user = await User.findById(req.params.id);
     if (!user) throw new ApiError(404, "User not found");
 
+    if (isDemoEmail(user.email)) {
+      throw new ApiError(403, "This is a shared demo account and cannot be edited.");
+    }
+
     user.role = role;
     await user.save();
 
@@ -50,10 +55,16 @@ usersRouter.delete("/:id", async (req: AuthRequest, res, next) => {
       throw new ApiError(400, "You cannot delete your own account");
     }
 
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) throw new ApiError(404, "User not found");
+    const target = await User.findById(req.params.id);
+    if (!target) throw new ApiError(404, "User not found");
 
-    await Like.deleteMany({ userId: user._id });
+    if (isDemoEmail(target.email)) {
+      throw new ApiError(403, "This is a shared demo account and cannot be deleted.");
+    }
+
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    await Like.deleteMany({ userId: user!._id });
 
     res.status(204).send();
   } catch (err) {
