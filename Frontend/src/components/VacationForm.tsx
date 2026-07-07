@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { Vacation } from "../types";
 import { imageUrl } from "../api/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,7 +39,18 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
   const [endDate, setEndDate] = useState(initial ? toDateInputValue(initial.endDate) : "");
   const [price, setPrice] = useState(initial ? String(initial.price) : "");
   const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [clientError, setClientError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!image) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(image);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [image]);
 
   const todayIso = new Date().toISOString().slice(0, 10);
 
@@ -134,12 +145,27 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="image">Cover image{mode === "edit" ? " (leave empty to keep current)" : ""}</Label>
-            {mode === "edit" && initial && (
-              <img
-                className="mb-2 max-h-40 w-full rounded-xl border border-border object-cover"
-                src={imageUrl(initial.imageFileName)}
-                alt={initial.destination}
-              />
+            {previewUrl ? (
+              <div className="mb-2">
+                <p className="mb-1 text-xs font-bold text-muted-foreground">New image</p>
+                <img
+                  className="max-h-40 w-full rounded-xl border border-border object-cover"
+                  src={previewUrl}
+                  alt="Selected cover preview"
+                />
+              </div>
+            ) : (
+              mode === "edit" &&
+              initial && (
+                <div className="mb-2">
+                  <p className="mb-1 text-xs font-bold text-muted-foreground">Current image</p>
+                  <img
+                    className="max-h-40 w-full rounded-xl border border-border object-cover"
+                    src={imageUrl(initial.imageFileName)}
+                    alt={initial.destination}
+                  />
+                </div>
+              )
             )}
             <Input
               id="image"

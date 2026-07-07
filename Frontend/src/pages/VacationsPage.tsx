@@ -161,6 +161,12 @@ export function VacationsPage() {
         ))}
       </ToggleGroup>
 
+      {!loading && result && (
+        <p className="mb-4 text-sm text-muted-foreground">
+          {result.totalCount} vacation{result.totalCount === 1 ? "" : "s"} found
+        </p>
+      )}
+
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription>{error}</AlertDescription>

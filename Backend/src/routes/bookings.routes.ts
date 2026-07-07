@@ -2,11 +2,21 @@ import { Router } from "express";
 import crypto from "crypto";
 import { z } from "zod";
 import { Vacation } from "../models/Vacation";
-import { Booking } from "../models/Booking";
+import { Booking, IBooking } from "../models/Booking";
+import { User } from "../models/User";
 import { authGuard, adminGuard, AuthRequest } from "../middleware/auth";
 import { ApiError } from "../middleware/errorHandler";
 import { getStripeClient, toCleanStripeError } from "../services/stripeClient";
+import { sendBookingConfirmationEmail } from "../services/resendClient";
 import { env } from "../config/env";
+
+async function notifyBookingConfirmed(booking: IBooking): Promise<void> {
+  const user = await User.findById(booking.userId);
+  if (!user) return;
+  await sendBookingConfirmationEmail(user.email, booking).catch((err) => {
+    console.error("[bookings] failed to send confirmation email", err);
+  });
+}
 
 export const bookingsRouter = Router();
 
@@ -97,10 +107,14 @@ bookingsRouter.post("/webhook", async (req, res) => {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as { id: string; payment_intent?: string | null };
-    await Booking.updateOne(
-      { stripeSessionId: session.id },
-      { status: "confirmed", stripePaymentIntentId: session.payment_intent ?? undefined }
-    );
+    const booking = await Booking.findOne({ stripeSessionId: session.id });
+
+    if (booking && booking.status !== "confirmed") {
+      booking.status = "confirmed";
+      booking.stripePaymentIntentId = session.payment_intent ?? undefined;
+      await booking.save();
+      await notifyBookingConfirmed(booking);
+    }
   }
 
   res.json({ received: true });
@@ -125,6 +139,7 @@ bookingsRouter.get("/session/:sessionId", authGuard, async (req: AuthRequest, re
         booking.stripePaymentIntentId =
           typeof session.payment_intent === "string" ? session.payment_intent : undefined;
         await booking.save();
+        await notifyBookingConfirmed(booking);
       }
     }
 
