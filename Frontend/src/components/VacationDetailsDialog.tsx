@@ -23,7 +23,7 @@ export function VacationDetailsDialog({ vacation, onOpenChange, onBook }: Vacati
       <DialogContent className="max-h-[85vh] max-w-[560px] gap-0 overflow-hidden p-0">
         <div className="max-h-[85vh] overflow-y-auto">
           <img
-            src={imageUrl(vacation.imageFileName)}
+            src={imageUrl(vacation.imageFileName, 900)}
             alt={vacation.destination}
             className="h-56 w-full object-cover"
           />

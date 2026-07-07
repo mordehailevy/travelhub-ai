@@ -161,7 +161,7 @@ export function VacationForm({ mode, initial, submitting, serverError, onSubmit,
                   <p className="mb-1 text-xs font-bold text-muted-foreground">Current image</p>
                   <img
                     className="max-h-40 w-full rounded-xl border border-border object-cover"
-                    src={imageUrl(initial.imageFileName)}
+                    src={imageUrl(initial.imageFileName, 500)}
                     alt={initial.destination}
                   />
                 </div>

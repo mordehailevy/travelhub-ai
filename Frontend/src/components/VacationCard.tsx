@@ -41,7 +41,7 @@ export function VacationCard(props: VacationCardProps) {
       <Card className="h-full gap-0 overflow-hidden py-0">
         <div className="relative">
           <img
-            src={imageUrl(vacation.imageFileName)}
+            src={imageUrl(vacation.imageFileName, 600)}
             alt={vacation.destination}
             loading="lazy"
             className="h-[190px] w-full bg-muted object-cover"

@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 import mongoose from "mongoose";
 import path from "path";
 import { env } from "./config/env";
@@ -21,6 +22,7 @@ export function createApp(): Express {
   // cross-origin — helmet's same-origin CORP default would block <img> tags.
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
   app.use(cors({ origin: env.clientOrigin }));
+  app.use(compression());
 
   // Stripe's webhook signature check needs the untouched raw body, so this
   // path must be parsed with express.raw() before the global express.json()

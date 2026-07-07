@@ -97,7 +97,11 @@ export function LandingPage() {
               key={d.destination}
               className="relative w-56 shrink-0 overflow-hidden rounded-xl ring-1 ring-foreground/10"
             >
-              <img src={imageUrl(d.imageFileName)} alt={d.destination} className="h-32 w-56 bg-muted object-cover" />
+              <img
+                src={imageUrl(d.imageFileName, 300)}
+                alt={d.destination}
+                className="h-32 w-56 bg-muted object-cover"
+              />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-3 py-2 text-sm font-bold text-white">
                 {d.destination}
               </figcaption>

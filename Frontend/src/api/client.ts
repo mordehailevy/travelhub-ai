@@ -47,11 +47,16 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   return payload as T;
 }
 
-export function imageUrl(fileName: string): string {
+export function imageUrl(fileName: string, width?: number): string {
   // Admin-uploaded images are stored on Cloudinary and come back as full
   // URLs; only the 14 git-committed seed images are bare filenames served
   // from the backend's own /uploads.
   if (fileName.startsWith("http://") || fileName.startsWith("https://")) {
+    if (width && fileName.includes("res.cloudinary.com") && fileName.includes("/upload/")) {
+      // Ask Cloudinary for a right-sized, auto-format/auto-quality version
+      // instead of shipping the original upload at full resolution.
+      return fileName.replace("/upload/", `/upload/f_auto,q_auto,w_${width}/`);
+    }
     return fileName;
   }
   return `${API_URL}/uploads/${fileName}`;
