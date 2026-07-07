@@ -302,10 +302,37 @@ button {
 
 /*
   ---break---
-  No .dark variant: TravelHub AI is light-only by design (color-scheme is
-  pinned to "light" in :root), so shadcn's default dark palette is dropped
-  rather than left as dead, misleading CSS.
+  Dark palette — same Sky Blue + Adventure Orange hues, re-tuned for contrast
+  on a dark background. Toggled via the .dark class (see ThemeContext).
 */
+
+.dark {
+  --color-primary: #38bdf8;
+  --color-on-primary: #062033;
+  --color-secondary: #0ea5e9;
+  --color-on-secondary: #062033;
+  --color-accent: #fb923c;
+  --color-on-accent: #341303;
+  --color-bg: #0a1220;
+  --color-fg: #e2f1fb;
+  --color-card: #101c30;
+  --color-card-fg: #e2f1fb;
+  --color-muted: #182b40;
+  --color-muted-fg: #94a9c0;
+  --color-border: #24374f;
+  --color-destructive: #f87171;
+  --color-on-destructive: #350707;
+  --color-ring: #38bdf8;
+
+  --aurora-gradient: linear-gradient(120deg, #0ea5e9, #38bdf8, #fb923c, #0ea5e9);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 8px 20px rgba(251, 146, 60, 0.35);
+
+  color-scheme: dark;
+}
 
 @layer base {
   * {

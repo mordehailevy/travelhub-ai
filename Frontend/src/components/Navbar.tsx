@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -101,6 +102,8 @@ export function Navbar() {
       <nav className="hidden flex-wrap items-center gap-1 rounded-full bg-muted p-[5px] md:flex">{links}</nav>
 
       <div className="flex items-center gap-3.5">
+        <ThemeToggle />
+
         {isAuthenticated && user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

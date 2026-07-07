@@ -64,16 +64,16 @@ export function ReportPage() {
                     <stop offset="100%" stopColor="#ea580c" />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#bae6fd" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis
                   dataKey="destination"
                   angle={-35}
                   textAnchor="end"
                   interval={0}
                   height={90}
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                  tick={{ fontSize: 12, fill: "var(--color-muted-fg)" }}
                 />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "#64748b" }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--color-muted-fg)" }} />
                 <Tooltip cursor={{ fill: "rgba(14, 165, 233, 0.08)" }} />
                 <Bar dataKey="likes" fill="url(#likesGradient)" radius={[6, 6, 0, 0]} />
               </BarChart>

@@ -47,7 +47,7 @@ export function VacationCard(props: VacationCardProps) {
             className="h-[190px] w-full bg-muted object-cover"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
-          <Badge className="absolute bottom-3.5 left-3.5 bg-white/95 px-3 py-1.5 text-sm font-extrabold text-card-foreground shadow-sm">
+          <Badge className="absolute bottom-3.5 left-3.5 bg-white/95 px-3 py-1.5 text-sm font-extrabold text-neutral-900 shadow-sm">
             ${vacation.price.toLocaleString()}
           </Badge>
 
@@ -58,7 +58,7 @@ export function VacationCard(props: VacationCardProps) {
               aria-label={vacation.likedByMe ? "Unlike" : "Like"}
               className={cn(
                 "absolute top-3 right-3 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-white/92 px-3.5 py-2 text-sm font-bold shadow-sm backdrop-blur-md transition-transform hover:scale-105 disabled:opacity-60",
-                vacation.likedByMe ? "text-accent" : "text-muted-foreground"
+                vacation.likedByMe ? "text-accent" : "text-neutral-600"
               )}
             >
               <Heart className="size-4" fill={vacation.likedByMe ? "currentColor" : "none"} />

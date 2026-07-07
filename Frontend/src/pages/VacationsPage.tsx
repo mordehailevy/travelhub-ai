@@ -9,6 +9,7 @@ import { VacationDetailsDialog } from "../components/VacationDetailsDialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { scrollToTop } from "@/lib/scrollToTop";
 
 const FILTERS: { value: VacationFilter; label: string }[] = [
   { value: "all", label: "All vacations" },
@@ -47,6 +48,10 @@ export function VacationsPage() {
       cancelled = true;
     };
   }, [page, filter]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, [page]);
 
   const handleFilterChange = (value: VacationFilter) => {
     setFilter(value);

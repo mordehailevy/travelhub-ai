@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { scrollToTop } from "@/lib/scrollToTop";
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -38,6 +39,10 @@ function LikedVacationsTab() {
     return () => {
       cancelled = true;
     };
+  }, [page]);
+
+  useEffect(() => {
+    scrollToTop();
   }, [page]);
 
   const handleToggleLike = async (vacation: Vacation) => {
