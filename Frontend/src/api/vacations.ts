@@ -1,8 +1,15 @@
 import { apiRequest } from "./client";
-import type { Vacation, VacationFilter, VacationsPage } from "../types";
+import type { Vacation, VacationFilter, VacationSort, VacationsPage } from "../types";
 
-export function fetchVacations(page: number, filter: VacationFilter): Promise<VacationsPage> {
-  return apiRequest<VacationsPage>(`/api/vacations?page=${page}&filter=${filter}`);
+export function fetchVacations(
+  page: number,
+  filter: VacationFilter,
+  search = "",
+  sort: VacationSort = "date_asc"
+): Promise<VacationsPage> {
+  const params = new URLSearchParams({ page: String(page), filter, sort });
+  if (search) params.set("search", search);
+  return apiRequest<VacationsPage>(`/api/vacations?${params.toString()}`);
 }
 
 export function likeVacation(id: string): Promise<void> {

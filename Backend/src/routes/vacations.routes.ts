@@ -12,13 +12,27 @@ export const vacationsRouter = Router();
 
 const PAGE_SIZE = 9;
 type Filter = "all" | "liked" | "active" | "future";
+type Sort = "date_asc" | "date_desc" | "price_asc" | "price_desc";
+
+const SORT_STAGES: Record<Sort, Record<string, 1 | -1>> = {
+  date_asc: { startDate: 1 },
+  date_desc: { startDate: -1 },
+  price_asc: { price: 1 },
+  price_desc: { price: -1 },
+};
 
 vacationsRouter.get("/", authGuard, async (req: AuthRequest, res, next) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
     const filter = (req.query.filter as Filter) || "all";
+    const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const sort = (req.query.sort as Sort) || "date_asc";
     const userId = new Types.ObjectId(req.user!.userId);
     const now = new Date();
+
+    if (!SORT_STAGES[sort]) {
+      throw new ApiError(400, "Invalid sort value");
+    }
 
     const match: Record<string, unknown> = {};
 
@@ -34,9 +48,13 @@ vacationsRouter.get("/", authGuard, async (req: AuthRequest, res, next) => {
       throw new ApiError(400, "Invalid filter value");
     }
 
+    if (search) {
+      match.destination = { $regex: search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    }
+
     const [result] = await Vacation.aggregate([
       { $match: match },
-      { $sort: { startDate: 1 } },
+      { $sort: SORT_STAGES[sort] },
       {
         $facet: {
           data: [

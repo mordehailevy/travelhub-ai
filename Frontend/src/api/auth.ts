@@ -24,3 +24,11 @@ export function resetPassword(token: string, password: string): Promise<{ messag
     body: { token, password },
   });
 }
+
+export function updateProfile(input: { firstName: string; lastName: string; email: string }): Promise<AuthResponse> {
+  return apiRequest<AuthResponse>("/api/auth/me", { method: "PATCH", body: input });
+}
+
+export function changePassword(input: { currentPassword: string; newPassword: string }): Promise<{ message: string }> {
+  return apiRequest<{ message: string }>("/api/auth/me/password", { method: "PATCH", body: input });
+}

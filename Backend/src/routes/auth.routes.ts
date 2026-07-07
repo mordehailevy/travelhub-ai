@@ -6,6 +6,7 @@ import { User } from "../models/User";
 import { signToken } from "../utils/jwt";
 import { ApiError } from "../middleware/errorHandler";
 import { authLimiter } from "../middleware/rateLimit";
+import { authGuard, AuthRequest } from "../middleware/auth";
 import { sendPasswordResetEmail } from "../services/resendClient";
 import { env } from "../config/env";
 
@@ -32,6 +33,17 @@ const forgotPasswordSchema = z.object({
 const resetPasswordSchema = z.object({
   token: z.string().min(1, "Reset token is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const updateProfileSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email address"),
+});
+
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -154,6 +166,62 @@ authRouter.post("/reset-password", async (req, res, next) => {
     await user.save();
 
     res.json({ message: "Password updated. You can now log in." });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return next(new ApiError(400, err.issues[0]?.message ?? "Invalid input"));
+    }
+    next(err);
+  }
+});
+
+authRouter.patch("/me", authGuard, async (req: AuthRequest, res, next) => {
+  try {
+    const data = updateProfileSchema.parse(req.body);
+    const email = data.email.toLowerCase().trim();
+
+    const user = await User.findById(req.user!.userId);
+    if (!user) throw new ApiError(404, "User not found");
+
+    if (email !== user.email) {
+      const existing = await User.findOne({ email });
+      if (existing) throw new ApiError(409, "This email is already registered");
+    }
+
+    user.firstName = data.firstName;
+    user.lastName = data.lastName;
+    user.email = email;
+    await user.save();
+
+    const token = signToken({
+      userId: user._id.toString(),
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    });
+
+    res.json({ token, user });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return next(new ApiError(400, err.issues[0]?.message ?? "Invalid input"));
+    }
+    next(err);
+  }
+});
+
+authRouter.patch("/me/password", authGuard, async (req: AuthRequest, res, next) => {
+  try {
+    const data = changePasswordSchema.parse(req.body);
+
+    const user = await User.findById(req.user!.userId);
+    if (!user) throw new ApiError(404, "User not found");
+
+    const currentMatches = await bcrypt.compare(data.currentPassword, user.password);
+    if (!currentMatches) throw new ApiError(401, "Current password is incorrect");
+
+    user.password = await bcrypt.hash(data.newPassword, 10);
+    await user.save();
+
+    res.json({ message: "Password updated." });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return next(new ApiError(400, err.issues[0]?.message ?? "Invalid input"));

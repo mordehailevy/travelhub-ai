@@ -27,6 +27,7 @@ export interface Vacation {
 }
 
 export type VacationFilter = "all" | "liked" | "active" | "future";
+export type VacationSort = "date_asc" | "date_desc" | "price_asc" | "price_desc";
 
 export interface VacationsPage {
   data: Vacation[];

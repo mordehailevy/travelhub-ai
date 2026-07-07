@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { Search } from "lucide-react";
 import { fetchVacations, likeVacation, unlikeVacation } from "../api/vacations";
-import type { Vacation, VacationFilter, VacationsPage as VacationsPageData } from "../types";
+import type { Vacation, VacationFilter, VacationSort, VacationsPage as VacationsPageData } from "../types";
 import { VacationCard } from "../components/VacationCard";
 import { Pagination } from "../components/Pagination";
 import { BookingDialog } from "../components/BookingDialog";
 import { VacationDetailsDialog } from "../components/VacationDetailsDialog";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { scrollToTop } from "@/lib/scrollToTop";
@@ -18,8 +20,18 @@ const FILTERS: { value: VacationFilter; label: string }[] = [
   { value: "future", label: "Not started yet" },
 ];
 
+const SORTS: { value: VacationSort; label: string }[] = [
+  { value: "date_asc", label: "Date: soonest first" },
+  { value: "date_desc", label: "Date: latest first" },
+  { value: "price_asc", label: "Price: low to high" },
+  { value: "price_desc", label: "Price: high to low" },
+];
+
 export function VacationsPage() {
   const [filter, setFilter] = useState<VacationFilter>("all");
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<VacationSort>("date_asc");
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<VacationsPageData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,11 +41,19 @@ export function VacationsPage() {
   const [detailsVacation, setDetailsVacation] = useState<Vacation | null>(null);
 
   useEffect(() => {
+    const handle = setTimeout(() => {
+      setSearch(searchInput.trim());
+      setPage(1);
+    }, 350);
+    return () => clearTimeout(handle);
+  }, [searchInput]);
+
+  useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
 
-    fetchVacations(page, filter)
+    fetchVacations(page, filter, search, sort)
       .then((data) => {
         if (!cancelled) setResult(data);
       })
@@ -47,7 +67,7 @@ export function VacationsPage() {
     return () => {
       cancelled = true;
     };
-  }, [page, filter]);
+  }, [page, filter, search, sort]);
 
   useEffect(() => {
     scrollToTop();
@@ -55,6 +75,11 @@ export function VacationsPage() {
 
   const handleFilterChange = (value: VacationFilter) => {
     setFilter(value);
+    setPage(1);
+  };
+
+  const handleSortChange = (value: VacationSort) => {
+    setSort(value);
     setPage(1);
   };
 
@@ -97,6 +122,31 @@ export function VacationsPage() {
         <p className="hero-subtitle">Browse upcoming and past trips, and like the ones you'd love to take.</p>
       </motion.div>
 
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[220px] flex-1">
+          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search a destination…"
+            aria-label="Search a destination"
+            className="h-11 rounded-full pl-9"
+          />
+        </div>
+        <select
+          value={sort}
+          onChange={(e) => handleSortChange(e.target.value as VacationSort)}
+          aria-label="Sort vacations"
+          className="h-11 rounded-full border border-input bg-transparent px-4 text-sm font-bold text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          {SORTS.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <ToggleGroup
         type="single"
         value={filter}
@@ -134,7 +184,9 @@ export function VacationsPage() {
       )}
 
       {!loading && result && result.data.length === 0 && (
-        <p className="py-10 text-center italic text-muted-foreground">No vacations match this filter yet.</p>
+        <p className="py-10 text-center italic text-muted-foreground">
+          {search ? `No vacations match "${search}".` : "No vacations match this filter yet."}
+        </p>
       )}
 
       {!loading && result && result.data.length > 0 && (
