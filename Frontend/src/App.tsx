@@ -4,7 +4,9 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ProtectedRoute, AdminRoute } from "./components/ProtectedRoute";
+import { NotFoundPage } from "./pages/NotFoundPage";
 import { LandingPage } from "./pages/LandingPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -46,77 +48,79 @@ function HomeRedirect() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<HomeRedirect />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<HomeRedirect />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-              <Route element={<ProtectedRoute />}>
-                <Route path="/vacations" element={<VacationsPage />} />
-                <Route path="/ai-recommendation" element={<AiRecommendationPage />} />
-                <Route path="/ask" element={<McpChatPage />} />
-                <Route path="/profil" element={<ProfilPage />} />
-                <Route path="/booking/success" element={<BookingSuccessPage />} />
-                <Route path="/booking/cancel" element={<BookingCancelPage />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/vacations" element={<VacationsPage />} />
+                  <Route path="/ai-recommendation" element={<AiRecommendationPage />} />
+                  <Route path="/ask" element={<McpChatPage />} />
+                  <Route path="/profil" element={<ProfilPage />} />
+                  <Route path="/booking/success" element={<BookingSuccessPage />} />
+                  <Route path="/booking/cancel" element={<BookingCancelPage />} />
+                </Route>
+
+                <Route element={<AdminRoute />}>
+                  <Route
+                    path="/admin"
+                    element={
+                      <Suspense fallback={<AdminPageFallback />}>
+                        <AdminVacationsPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="/admin/vacations/new"
+                    element={
+                      <Suspense fallback={<AdminPageFallback />}>
+                        <AddVacationPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="/admin/vacations/:id/edit"
+                    element={
+                      <Suspense fallback={<AdminPageFallback />}>
+                        <EditVacationPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="/admin/report"
+                    element={
+                      <Suspense fallback={<AdminPageFallback />}>
+                        <ReportPage />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="/admin/bookings"
+                    element={
+                      <Suspense fallback={<AdminPageFallback />}>
+                        <AdminBookingsPage />
+                      </Suspense>
+                    }
+                  />
+                </Route>
+
+                <Route path="*" element={<NotFoundPage />} />
               </Route>
-
-              <Route element={<AdminRoute />}>
-                <Route
-                  path="/admin"
-                  element={
-                    <Suspense fallback={<AdminPageFallback />}>
-                      <AdminVacationsPage />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="/admin/vacations/new"
-                  element={
-                    <Suspense fallback={<AdminPageFallback />}>
-                      <AddVacationPage />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="/admin/vacations/:id/edit"
-                  element={
-                    <Suspense fallback={<AdminPageFallback />}>
-                      <EditVacationPage />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="/admin/report"
-                  element={
-                    <Suspense fallback={<AdminPageFallback />}>
-                      <ReportPage />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="/admin/bookings"
-                  element={
-                    <Suspense fallback={<AdminPageFallback />}>
-                      <AdminBookingsPage />
-                    </Suspense>
-                  }
-                />
-              </Route>
-
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeProvider>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -24,8 +24,8 @@ export function RegisterPage() {
     event.preventDefault();
     setError(null);
 
-    if (password.length < 4) {
-      setError("Password must be at least 4 characters.");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
 
@@ -69,7 +69,7 @@ export function RegisterPage() {
               id="password"
               type="password"
               required
-              minLength={4}
+              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
