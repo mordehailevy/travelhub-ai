@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 import ReactMarkdown from "react-markdown";
 import { Bot, ArrowRight } from "lucide-react";
 import { getAiRecommendation } from "../api/ai";
@@ -50,14 +51,19 @@ export function ChatbotButton() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <Button
+      <motion.button
+        type="button"
         onClick={() => setOpen(true)}
-        size="icon"
-        aria-label="Ask the AI for a trip recommendation"
-        className="fixed right-6 bottom-6 z-40 size-14 rounded-full shadow-[var(--shadow-glow)]"
+        aria-label="Open the AI chatbot for a trip recommendation"
+        className="fixed right-6 bottom-6 z-40 flex items-center gap-2 rounded-full bg-primary px-5 py-3.5 text-primary-foreground shadow-[var(--shadow-glow)]"
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.96 }}
       >
-        <Bot className="size-6" />
-      </Button>
+        <Bot className="size-5" />
+        <span className="text-sm font-bold">Chatbot</span>
+      </motion.button>
 
       <SheetContent side="right" className="flex w-96 flex-col">
         <SheetHeader>
