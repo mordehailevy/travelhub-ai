@@ -1,9 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { ChatbotButton } from "./ChatbotButton";
 import { Toaster } from "@/components/ui/sonner";
+import { useAuth } from "../context/AuthContext";
 
 export function Layout() {
+  const { isAuthenticated, isAdmin } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -11,6 +15,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      {isAuthenticated && !isAdmin && <ChatbotButton />}
       <Toaster />
     </div>
   );

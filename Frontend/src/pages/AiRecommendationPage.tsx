@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import ReactMarkdown from "react-markdown";
+import { Sparkles, MapPin, Clock } from "lucide-react";
 import { getAiRecommendation } from "../api/ai";
 import { ApiClientError } from "../api/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+const highlights = [
+  {
+    icon: MapPin,
+    title: "Any destination",
+    description: "Type a city, region, or country and our AI builds a plan around it.",
+  },
+  {
+    icon: Sparkles,
+    title: "Tailored itinerary",
+    description: "Get suggested activities, sights, and pacing generated just for that trip.",
+  },
+  {
+    icon: Clock,
+    title: "Ready in seconds",
+    description: "No research needed — the recommendation appears right below the form.",
+  },
+];
 
 export function AiRecommendationPage() {
   const [destination, setDestination] = useState("");
@@ -37,6 +56,16 @@ export function AiRecommendationPage() {
       <div className="page-header">
         <h1 className="page-title">AI Recommendation</h1>
         <p className="page-subtitle">Tell us where you're headed, and get a quick AI-generated itinerary.</p>
+      </div>
+
+      <div className="mx-auto mb-8 grid max-w-[640px] gap-4 sm:grid-cols-3">
+        {highlights.map(({ icon: Icon, title, description }) => (
+          <div key={title} className="flex flex-col items-start gap-2 rounded-lg border border-border bg-card p-4">
+            <Icon className="size-5 text-primary" />
+            <p className="text-sm font-semibold text-foreground">{title}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
+          </div>
+        ))}
       </div>
 
       <Card className="mx-auto max-w-[640px] p-7">
