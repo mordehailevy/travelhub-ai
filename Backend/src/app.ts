@@ -21,7 +21,9 @@ export function createApp(): Express {
   // be once deployed), so vacation images under /uploads must stay loadable
   // cross-origin — helmet's same-origin CORP default would block <img> tags.
   app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-  app.use(cors({ origin: env.clientOrigin }));
+  // CLIENT_ORIGIN may list several comma-separated origins (e.g. the site's
+  // old and new addresses while both are live).
+  app.use(cors({ origin: env.clientOrigin.split(",").map((o) => o.trim()).filter(Boolean) }));
   app.use(compression());
 
   // Stripe's webhook signature check needs the untouched raw body, so this

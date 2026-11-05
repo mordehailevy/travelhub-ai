@@ -7,7 +7,11 @@ import fs from "fs";
 // an ephemeral host's filesystem doesn't survive redeploys.
 const uploadsDir = path.join(__dirname, "..", "..", "uploads");
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+  try {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  } catch {
+    // Read-only filesystem (serverless host): nothing is written here anyway.
+  }
 }
 
 const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
