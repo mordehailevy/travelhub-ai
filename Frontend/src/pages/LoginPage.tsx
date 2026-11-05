@@ -9,6 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
+// Shared demo accounts, created by the backend seed. They are protected
+// server-side against edits, so publishing them here is intentional.
+const DEMO_ACCOUNTS = [
+  { label: "User account", hint: "Browse, like and book vacations", email: "user@travelhub.ai", password: "user1234" },
+  { label: "Admin (back office)", hint: "Manage vacations, bookings and reports", email: "admin@travelhub.ai", password: "admin1234" },
+];
+
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,6 +77,34 @@ export function LoginPage() {
         <p className="mt-4.5 text-center text-sm text-muted-foreground">
           Don't have an account? <Link to="/register">Register now</Link>
         </p>
+        <div className="mt-6 rounded-lg border border-border bg-muted/40 p-4">
+          <p className="mb-3 text-sm font-semibold text-foreground">Demo accounts</p>
+          <ul className="flex flex-col gap-3">
+            {DEMO_ACCOUNTS.map((account) => (
+              <li key={account.email} className="flex items-center justify-between gap-3">
+                <div className="min-w-0 text-sm">
+                  <p className="font-medium text-foreground">{account.label}</p>
+                  <p className="text-xs text-muted-foreground">{account.hint}</p>
+                  <p className="mt-1 break-all font-mono text-xs text-foreground">
+                    {account.email} / {account.password}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEmail(account.email);
+                    setPassword(account.password);
+                    setError(null);
+                  }}
+                >
+                  Use
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </CardContent>
     </Card>
   );
