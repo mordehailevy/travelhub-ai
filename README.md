@@ -1,5 +1,7 @@
 # TravelHub AI
 
+**Live demo:** [travelhub-ai-eight.vercel.app](https://travelhub-ai-eight.vercel.app)
+
 Full-stack vacations platform — MongoDB · Node.js/Express (TypeScript) · React (TypeScript) · OpenAI.
 
 Registered users browse vacations and like/unlike them; admins manage the catalog, view an engagement report,
@@ -81,3 +83,9 @@ The "Ask the data" page is powered by a real MCP server (`Backend/src/mcp/server
 in-process MCP client (`Backend/src/mcp/client.ts`) connects to it over an in-memory transport, and
 `POST /api/mcp/ask` lets OpenAI pick and call the right tool(s) before answering the user's question in natural
 language.
+
+## Background
+
+Built during the John Bryce Full Stack & AI program (Tel Aviv).
+
+**Author:** [Mordehai Levy](https://github.com/mordehailevy) · [LinkedIn](https://www.linkedin.com/in/mordehailevy)
