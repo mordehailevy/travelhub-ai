@@ -5,6 +5,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 import mongoose from "mongoose";
 import { createApp } from "../src/app";
 import { connectDb } from "../src/config/db";
+import { seedIfEmpty } from "../src/seedData";
 
 const app = createApp();
 let connecting: Promise<void> | null = null;
@@ -12,7 +13,11 @@ let connecting: Promise<void> | null = null;
 function ensureDb(): Promise<void> {
   if (mongoose.connection.readyState === 1) return Promise.resolve();
   if (!connecting) {
-    connecting = connectDb().catch((err) => {
+    connecting = connectDb()
+      .then(async () => {
+        await seedIfEmpty();
+      })
+      .catch((err) => {
       connecting = null;
       throw err;
     });
@@ -21,6 +26,11 @@ function ensureDb(): Promise<void> {
 }
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  // Static demo images don't need the database.
+  if (req.url?.startsWith("/uploads/")) {
+    app(req as Parameters<typeof app>[0], res as Parameters<typeof app>[1]);
+    return;
+  }
   try {
     await ensureDb();
   } catch (err) {

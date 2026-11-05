@@ -5,6 +5,12 @@ dotenv.config();
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// The Vercel Marketplace MongoDB Atlas integration injects MONGODB_URI; it
+// takes precedence over MONGO_URI (still used for local dev and Docker).
+if (process.env.MONGODB_URI) {
+  process.env.MONGO_URI = process.env.MONGODB_URI;
+}
+
 const schema = z.object({
   PORT: z.coerce.number().default(4000),
   MONGO_URI: isProduction
